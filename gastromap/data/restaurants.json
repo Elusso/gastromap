@@ -1,0 +1,82 @@
+{
+  "restaurants": [
+    {
+      "id": "altus",
+      "name": {"sk": "Altus", "en": "Altus", "ru": "Альтус"},
+      "address": {"sk": "Pribeň 10, Bratislava", "en": "Pribeň 10, Bratislava", "ru": "Pribeň 10, Братислава"},
+      "coords": {"lat": 48.1480, "lng": 17.1067},
+      "website": "https://altus.sk",
+      "phone": "+421 911 111 111",
+      "color": "#1a1a2e",
+      "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
+      "description": {
+        "sk": "Premium sushi bar s moderným interiérom a skvelým výhľadom na mesto.",
+        "en": "Premium sushi bar with modern interior and great city views.",
+        "ru": "Премиум суши-бар с современным интерьером и прекрасным видом на город."
+      }
+    },
+    {
+      "id": "kastav",
+      "name": {"sk": "Kastav", "en": "Kastav", "ru": "Кастав"},
+      "address": {"sk": "Hviezdoslavova 12, Bratislava", "en": "Hviezdoslavova 12, Bratislava", "ru": "Hviezdoslavova 12, Братислава"},
+      "coords": {"lat": 48.1475, "lng": 17.1114},
+      "website": "https://kastav.sk",
+      "phone": "+421 908 123 456",
+      "color": "#e6b080",
+      "image": "https://images.unsplash.com/photo-1559396852-46991b05c330?w=800&q=80",
+      "description": {
+        "sk": "Tradičná slovenská kuchyňa s moderným výkladom.",
+        "en": "Traditional Slovak cuisine with a modern twist.",
+        "ru": "Традиционная словацкая кухня с современным подходом."
+      }
+    },
+    {
+      "id": "dva_aly",
+      "name": {"sk": "Dva Alý", "en": "Dva Alý", "ru": "Два Али"},
+      "address": {"sk": "Svetozárna 4, Bratislava", "en": "Svetozárna 4, Bratislava", "ru": "Svetозárna 4, Братислава"},
+      "coords": {"lat": 48.1455, "lng": 17.1180},
+      "website": "https://dvaaly.sk",
+      "phone": "+421 910 222 333",
+      "color": "#d4af37",
+      "image": "https://images.unsplash.com/photo-1595037031676-855dd35464a2?w=800&q=80",
+      "description": {
+        "sk": "Elegantné miestnosť pre špeciality z mora.",
+        "en": "Elegant setting for seafood specialties.",
+        "ru": "Элегантная обстановка для морских деликатесов."
+      }
+    },
+    {
+      "id": "la_banyka",
+      "name": {"sk": "La Bañka", "en": "La Bañka", "ru": "Ла Банка"},
+      "address": {"sk": "Lipská 8, Bratislava", "en": "Lipská 8, Bratislava", "ru": "Lipská 8, Братислава"},
+      "coords": {"lat": 48.1468, "lng": 17.1154},
+      "website": "https://labanka.sk",
+      "phone": "+421 915 444 555",
+      "color": "#8d6e63",
+      "image": "https://images.unsplash.com/photo-1556622333-858035c12133?w=800&q=80",
+      "description": {
+        "sk": "Rustikálna chalupa s autentickými pokrmami.",
+        "en": "Rustic cottage with authentic dishes.",
+        "ru": "Рустичный домик с аутентичными блюдами."
+      }
+    },
+    {
+      "id": "slavonia",
+      "name": {"sk": "Slávia", "en": "Slávia", "ru": "Славия"},
+      "address": {"sk": "Mierová 15, Bratislava", "en": "Mierová 15, Bratislava", "ru": "Mierová 15, Братислава"},
+      "coords": {"lat": 48.1490, "lng": 17.1085},
+      "website": "https://slavia.sk",
+      "phone": "+421 905 666 777",
+      "color": "#5d4037",
+      "image": "https://images.unsplash.com/photo-1511671727733-5aa2e2fc303c?w=800&q=80",
+      "description": {
+        "sk": "Klasická aristokratická reštaurácia s históriou.",
+        "en": "Classic aristocratic restaurant with history.",
+        "ru": "Классический аристократический ресторан с историей."
+      }
+    }
+  ],
+  "city": "Bratislava",
+  "supported_languages": ["sk", "en", "ru"],
+  "default_language": "sk"
+}

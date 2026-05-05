@@ -1,20 +1,432 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="sk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GastroMap — Apple Design</title>
+  <title>GastroMap — Bratislava</title>
   
-  <!-- Fonts: Inter + JetBrains Mono (Linear style) -->
+  <!-- Fonts: Inter + JetBrains Mono (Apple style) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;510;590&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
   <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9dDPLiNSlFvo0zHcudZs7U=" crossorigin=""/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   
   <!-- AOS Animation -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
+  <style>
+    /* Warm Apple Design System */
+    :root {
+      --brand-bg: #f7f5f2;
+      --brand-card: #ffffff;
+      --brand-text: #1c1c1e;
+      --brand-secondary: #424245;
+      --brand-tertiary: #8e8e93;
+      --brand-accent: #e85d5d;
+      --brand-gold: #d4af37;
+      --brand-green: #4caf50;
+      --brand-gradient: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+      --brand-gradient-violet: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+      --shadow-card: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+      --radius-standard: 12px;
+      --radius-card: 20px;
+      --radius-panel: 24px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html { font-size: 16px; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--brand-bg);
+      color: var(--brand-text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(247,245,242,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+    }
+    
+    .header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 590;
+      font-size: 1.25rem;
+      color: var(--brand-text);
+    }
+    
+    .logo img { width: 32px; height: 32px; border-radius: 8px; }
+    
+    .nav { display: flex; gap: 8px; }
+    
+    .nav-item {
+      background: var(--brand-card);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 8px;
+      padding: 10px 16px;
+      color: var(--brand-secondary);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.2s ease;
+    }
+    
+    .nav-item:hover {
+      background: rgba(255,255,255,0.7);
+      transform: translateY(-2px);
+    }
+    
+    .nav-item.active {
+      background: var(--brand-accent);
+      color: white;
+      border-color: var(--brand-accent);
+      box-shadow: var(--shadow-card);
+    }
+    
+    /* Language Toggle */
+    .lang-toggle {
+      background: var(--brand-card);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    
+    .lang-toggle:hover { background: rgba(255,255,255,0.7); }
+    
+    /* Main */
+    .main { min-height: 80vh; }
+    
+    .section { display: none; padding: 60px 0; }
+    
+    .section.active { display: block; }
+    
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 80px 20px 60px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+    }
+    
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 510;
+      color: var(--brand-text);
+      margin-bottom: 16px;
+      line-height: 1.1;
+      letter-spacing: -0.08px;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.13rem;
+      color: var(--brand-tertiary);
+      margin-bottom: 32px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .search-bar input {
+      flex: 1;
+      background: var(--brand-card);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 12px;
+      padding: 16px 24px;
+      color: var(--brand-text);
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    
+    .search-bar input:focus {
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 4px rgba(232,93,93,0.1);
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: 590;
+      font-size: 0.94rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    
+    .btn-primary {
+      background: var(--brand-gradient);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--brand-gradient-violet);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    /* Section Title */
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 590;
+      margin: 40px 0 24px;
+      padding-left: 20px;
+      border-left: 4px solid var(--brand-accent);
+    }
+    
+    /* Filter Chips */
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0 40px;
+      overflow-x: auto;
+      padding: 4px;
+    }
+    
+    .filter-btn {
+      background: var(--brand-card);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 10px 20px;
+      border-radius: 9999px;
+      color: var(--brand-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      font-size: 0.95rem;
+    }
+    
+    .filter-btn.active {
+      background: var(--brand-accent);
+      color: white;
+      border-color: var(--brand-accent);
+      box-shadow: var(--shadow-card);
+    }
+    
+    /* Card Grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      padding: 20px;
+    }
+    
+    .card {
+      background: var(--brand-card);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(232,93,93,0.3);
+    }
+    
+    .card-image {
+      height: 180px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    
+    .card:hover .card-image img {
+      transform: scale(1.05);
+    }
+    
+    .card-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(10px);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--brand-text);
+    }
+    
+    .card-content { padding: 24px; }
+    
+    .card-title {
+      font-size: 1.375rem;
+      font-weight: 590;
+      margin-bottom: 8px;
+      color: var(--brand-text);
+    }
+    
+    .card-subtitle {
+      color: var(--brand-tertiary);
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+    }
+    
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .icon-label { color: var(--brand-tertiary); font-size: 1rem; }
+    .meta-text { color: var(--brand-secondary); font-size: 0.95rem; }
+    
+    /* Map Container */
+    .map-container {
+      background: var(--brand-card);
+      border-radius: var(--radius-panel);
+      height: 500px;
+      position: relative;
+      margin: 20px 0;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    
+    .leaflet-container { height: 100%; }
+    
+    /* Footer */
+    .footer {
+      border-top: 1px solid rgba(0,0,0,0.08);
+      padding: 60px 0 40px;
+      text-align: center;
+      color: var(--brand-tertiary);
+    }
+    
+    /* Reservation Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .modal.active { display: flex; }
+    
+    .modal-content {
+      background: var(--brand-card);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 590;
+      color: var(--brand-text);
+    }
+    
+    .modal-body { margin-bottom: 24px; }
+    
+    .form-group { margin-bottom: 20px; }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--brand-secondary);
+      font-size: 0.95rem;
+    }
+    
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.08);
+      font-size: 1rem;
+      background: white;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--brand-accent);
+    }
+    
+    .modal-footer {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.25rem; }
+      .card-grid { grid-template-columns: 1fr; }
+      .search-bar { flex-direction: column; }
+      .filter-btn { min-width: 120px; }
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+    
+    /* AOS Animations */
+    [data-aos] { opacity: 0; transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+    [data-aos][data-aos-delay] { transition-delay: 100ms; }
+    [data-aos][data-aos=fade-up] { transform: translateY(30px); }
+    [data-aos][data-aos=zoom-in-up] { transform: scale(0.9); }
+    [data-aos.active] { opacity: 1; transform: none; }
+  </style>
   
   <link rel="stylesheet" href="style.css">
 </head>
@@ -22,163 +434,113 @@
   <header class="header">
     <div class="container">
       <div class="logo">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L2 7L12 22L22 7L12 2Z" stroke="#5e6ad2" stroke-width="2" stroke-linejoin="round"/>
-        </svg>
+        <img src="images/logo.png" alt="GastroMap">
         <span>GastroMap</span>
       </div>
       <nav class="nav">
-        <button class="nav-item active" data-section="home" aria-label="Главная">🏠</button>
-        <button class="nav-item" data-section="map" aria-label="Карта">🗺️</button>
-        <button class="nav-item" data-section="menu" aria-label="Меню">🍽️</button>
-        <button class="nav-item" data-section="reservations" aria-label="Бронирования">📅</button>
+        <button class="nav-item active" data-section="home" data-i18n="nav_home">🏠</button>
+        <button class="nav-item" data-section="map" data-i18n="nav_map">🗺️</button>
+        <button class="nav-item" data-section="reservations" data-i18n="nav_reservations">📅</button>
       </nav>
+      <button class="lang-toggle" id="lang-toggle">.sk</button>
     </div>
   </header>
-
+  
   <main class="main">
+    <!-- Home Section -->
     <section id="home" class="section active" data-aos="fade-up">
       <div class="container">
         <div class="hero" data-aos="zoom-in-up">
-          <h1 class="hero-title">Откройте вкусы города</h1>
-          <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">Лучшие рестораны — в красивом интерфейсе</p>
-          <div class="search-bar" data-aos="fade-up" data-aos-delay="400">
-            <input type="text" placeholder="Поиск по названию, кухне, метро...">
-            <button class="btn btn-primary">Найти</button>
-          </div>
+          <h1 class="hero-title" data-i18n="hero_title">Откройте вкусы <br>Братиславы</h1>
+          <p class="hero-subtitle" data-i18n="hero_subtitle">Лучшие рестораны — в красивом интерфейсе</p>
+          <form class="search-bar" data-aos="fade-up" data-aos-delay="200">
+            <input type="text" placeholder="Поиск по названию, кухне..." data-i18n="search_placeholder">
+            <button type="submit" class="btn btn-primary" data-i18n="search_button">Найти</button>
+          </form>
         </div>
-        <h2 class="section-title" data-aos="fade-up">Популярные места</h2>
-        <div class="card-grid">
-          <article class="card" data-aos="fade-up" data-aos-delay="100">
-            <div class="card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-              <span class="card-badge">⭐ 4.8</span>
-            </div>
-            <div class="card-content">
-              <h3 class="card-title">Sushi Bar Izumo</h3>
-              <p class="card-subtitle">Японская, Девятиначка</p>
-              <div class="card-meta">
-                <span class="icon-label">📍</span>
-                <span class="meta-text">М. Садовая</span>
-                <span class="icon-label">💰</span>
-                <span class="meta-text">3000₽</span>
-              </div>
-              <button class="btn btn-outline">Забронировать</button>
-            </div>
-          </article>
-          <article class="card" data-aos="fade-up" data-aos-delay="200">
-            <div class="card-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-              <span class="card-badge">⭐ 4.9</span>
-            </div>
-            <div class="card-content">
-              <h3 class="card-title">Le French</h3>
-              <p class="card-subtitle">Французская, Премиум</p>
-              <div class="card-meta">
-                <span class="icon-label">📍</span>
-                <span class="meta-text">М. Невский проспект</span>
-                <span class="icon-label">💰</span>
-                <span class="meta-text">6000₽</span>
-              </div>
-              <button class="btn btn-outline">Забронировать</button>
-            </div>
-          </article>
-          <article class="card" data-aos="fade-up" data-aos-delay="300">
-            <div class="card-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-              <span class="card-badge">⭐ 4.7</span>
-            </div>
-            <div class="card-content">
-              <h3 class="card-title">Olivier Garden</h3>
-              <p class="card-subtitle">Европейская, Садовая</p>
-              <div class="card-meta">
-                <span class="icon-label">📍</span>
-                <span class="meta-text">ул. Садовая, 23</span>
-                <span class="icon-label">💰</span>
-                <span class="meta-text">2500₽</span>
-              </div>
-              <button class="btn btn-outline">Забронировать</button>
-            </div>
-          </article>
-          <article class="card" data-aos="fade-up" data-aos-delay="400">
-            <div class="card-image" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-              <span class="card-badge">⭐ 4.6</span>
-            </div>
-            <div class="card-content">
-              <h3 class="card-title">Pierogi House</h3>
-              <p class="card-subtitle">Русская, Домашняя</p>
-              <div class="card-meta">
-                <span class="icon-label">📍</span>
-                <span class="meta-text">М. Лесной</span>
-                <span class="icon-label">💰</span>
-                <span class="meta-text">1500₽</span>
-              </div>
-              <button class="btn btn-outline">Забронировать</button>
-            </div>
-          </article>
+        
+        <h2 class="section-title" data-i18n="popular_places">Популярные места</h2>
+        <div class="filters" data-aos="fade-up" data-aos-delay="300">
+          <button class="filter-btn active" data-i18n="filter_all">все</button>
+          <button class="filter-btn" data-i18n="filter_japanese">японская</button>
+          <button class="filter-btn" data-i18n="filter_french">французская</button>
+          <button class="filter-btn" data-i18n="filter_slovak">словацкая</button>
+          <button class="filter-btn" data-i18n="filter_asian">азиатская</button>
+          <button class="filter-btn" data-i18n="filter_european">европейская</button>
+        </div>
+        
+        <div class="card-grid" id="card-grid">
+          <!-- Cards will be injected here -->
         </div>
       </div>
     </section>
-
+    
+    <!-- Map Section -->
     <section id="map" class="section" data-aos="fade-up">
       <div class="container">
-        <h2 class="section-title" data-aos="fade-up">Карта ресторанов</h2>
-        <div id="map" class="map-container" data-aos="fade-up" data-aos-delay="200"></div>
+        <h2 class="section-title" data-i18n="map_title">Карта ресторанов</h2>
+        <div class="map-container" id="map"></div>
       </div>
     </section>
-
-    <section id="menu" class="section" data-aos="fade-up">
-      <div class="container">
-        <h2 class="section-title" data-aos="fade-up">Каталог блюд</h2>
-        <div class="filters" data-aos="fade-up" data-aos-delay="200">
-          <button class="filter-btn active">все</button>
-          <button class="filter-btn">японская</button>
-          <button class="filter-btn">французская</button>
-          <button class="filter-btn">русская</button>
-        </div>
-        <div class="menu-grid" data-aos="fade-up" data-aos-delay="400">
-          <div class="menu-item">
-            <div class="menu-img" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
-            <h4>Суши Сёткус</h4>
-            <p>Свежий лосось, мидии, огурец</p>
-            <span class="price">1200₽</span>
-          </div>
-          <div class="menu-item">
-            <div class="menu-img" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
-            <h4>Салат Оливье</h4>
-            <p>Крутон, яйцо, зелёный горошек</p>
-            <span class="price">800₽</span>
-          </div>
-          <div class="menu-item">
-            <div class="menu-img" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
-            <h4>Утка по-пекински</h4>
-            <p>Тонкие лепёшки, соус, огурцы</span class="price">3500₽</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
+    
+    <!-- Reservations Section -->
     <section id="reservations" class="section" data-aos="fade-up">
       <div class="container">
-        <h2 class="section-title" data-aos="fade-up">Мои бронирования</h2>
-        <div class="reservation-card" data-aos="fade-up">
-          <div class="res-info">
-            <strong>Sushi Bar Izumo</strong><br>
-            <span>2026-05-15, 19:00 • 4 чел.</span>
+        <h2 class="section-title" data-i18n="reservations_title">Мои бронирования</h2>
+        <div class="modal" id="reservation-modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Забронировать</h3>
+              <button class="btn" id="close-modal" style="padding: 8px 16px; background: #ff6b6b; color: white;">✕</button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label data-i18n="res_restaurant">Ресторан</label>
+                <select id="res-restaurant">
+                  <!-- Options injected via JS -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label data-i18n="res_date">Дата</label>
+                <input type="date" id="res-date">
+              </div>
+              <div class="form-group">
+                <label data-i18n="res_time">Время</label>
+                <input type="time" id="res-time">
+              </div>
+              <div class="form-group">
+                <label data-i18n="res_people">Человек</label>
+                <select id="res-people">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6+">6+</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn" id="cancel-reservation" data-i18n="cancel_button">Отмена</button>
+              <button class="btn btn-primary" id="confirm-reservation" data-i18n="confirm_button">Забронировать</button>
+            </div>
           </div>
-          <button class="btn btn-sm">Отменить</button>
         </div>
       </div>
     </section>
   </main>
-
+  
   <footer class="footer">
     <div class="container">
-      <p>© 2026 GastroMap — Apple design + Linear style</p>
+      <p>© 2026 GastroMap — Apple design + Warm palette</p>
     </div>
   </footer>
-
+  
   <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <!-- AOS Animation -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <!-- Custom Scripts -->
   <script src="script.js"></script>
 </body>
 </html>
