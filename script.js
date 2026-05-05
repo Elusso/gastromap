@@ -1,10 +1,10 @@
-// GastroMap — Full App Logic v2
-// Beige Design System, 4 Tabs, Swiper Carousel, Leaflet Map
+// GastroMap ULTIMATE — Full Logic
+// Beige Design + FontAwesome + Leaflet + Swiper + AOS
+'use strict';
 
-const APP = {
-  restaurants: [],
-  translations: {},
-  photos: {},
+const GM = {
+  restos: [],
+  trans: {},
   lang: localStorage.getItem('gm-lang') || 'sk',
   map: null,
   markers: [],
@@ -14,195 +14,196 @@ const APP = {
 
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', async () => {
-  await loadData();
-  APP.lang = localStorage.getItem('gm-lang') || 'sk';
-  setLangUI();
+  await loadAll();
+  GM.lang = localStorage.getItem('gm-lang') || 'sk';
+  applyLang();
   initMap();
-  renderRestaurantList();
-  initNavigation();
-  initViewToggle();
-  initDetailTabs();
-  renderPromotions();
+  renderList();
+  renderCuisineFilter();
+  renderPromos();
   renderNews();
   renderProfile();
-  initBottomSheet();
-  AOS.init({ duration: 600, once: true, offset: 30, startEvent: 'DOMContentLoaded' });
+  initDetailTabs();
+  initViewToggle();
+  initNav();
+  initSheets();
+  AOS.init({ duration: 600, once: true, offset: 30 });
+  runAutoDiag();
 });
 
 // ==================== DATA ====================
-async function loadData() {
+async function loadAll() {
   try {
-    const [rRes, tRes, pRes] = await Promise.all([
+    const [rR, tR] = await Promise.all([
       fetch('data/restaurants.json'),
-      fetch('data/translations.json'),
-      fetch('data/photos.json').catch(() => ({ json: () => ({ photos: {} }) }))
+      fetch('data/translations.json')
     ]);
-    APP.restaurants = (await rRes.json()).restaurants || [];
-    APP.translations = await tRes.json();
-    APP.photos = (await pRes.json()).photos || {};
-  } catch(e) { console.error('Data load fail:', e); }
-}
-
-function t(key) {
-  // Support nested keys like 'nav.explore'
-  const parts = key.split('.');
-  let val = APP.translations[APP.lang];
-  for (const p of parts) {
-    if (val == null) break;
-    val = val[p];
+    const rData = await rR.json();
+    GM.restos = (rData.restaurants || []).map(r => ({
+      ...r,
+      photos: r.photos?.length ? r.photos : gmMock.getPhotos(r.id, 4)
+    }));
+    GM.trans = await tR.json();
+  } catch(e) {
+    console.error('Load fail:', e);
+    // Fallback: generate photos anyway
+    if (GM.restos.length > 0) {
+      GM.restos.forEach(r => {
+        if (!r.photos || !r.photos.length) r.photos = gmMock.getPhotos(r.id, 4);
+      });
+    }
   }
-  return val ?? key;
 }
 
-function tnested(obj, key) {
-  if (!obj) return key;
-  const langSuffix = APP.lang === 'sk' ? '_sk' : APP.lang === 'ru' ? '_ru' : '_en';
-  // Try language-specific field first
-  const lkey = key + langSuffix;
-  const nameKey = 'name' + langSuffix;
-  return obj[lkey] || obj[nameKey] || obj[key] || obj.name || key;
+// ==================== TRANSLATION ====================
+function gt(key) {
+  let v = GM.trans[GM.lang];
+  for (const p of key.split('.')) {
+    if (v == null) break;
+    v = v[p];
+  }
+  return v ?? key;
 }
 
-// ==================== LANGUAGE ====================
-function setLang(lang) {
-  APP.lang = lang;
-  localStorage.setItem('gm-lang', lang);
-  setLangUI();
-  renderRestaurantList();
-  renderPromotions();
-  renderNews();
-  renderProfile();
-  if (APP.currentResto) renderDetailTabs();
+function gName(r) {
+  const suff = GM.lang === 'sk' ? '_sk' : GM.lang === 'ru' ? '_ru' : '_en';
+  const key = 'name' + suff;
+  return r[key] || r.name || r.id;
 }
 
-function setLangUI() {
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.lang === APP.lang);
-  });
+function applyLang() {
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.lang === GM.lang));
   document.querySelectorAll('[data-i18n]').forEach(el => {
-    const val = t(el.dataset.i18n);
-    if (val) el.textContent = val;
+    const v = gt(el.dataset.i18n);
+    if (v) el.textContent = v;
   });
 }
 
 document.querySelectorAll('.lang-btn').forEach(b => {
-  b.addEventListener('click', () => setLang(b.dataset.lang));
+  b.addEventListener('click', () => {
+    GM.lang = b.dataset.lang;
+    localStorage.setItem('gm-lang', GM.lang);
+    applyLang();
+    renderList();
+    renderPromos();
+    renderNews();
+    renderProfile();
+  });
 });
 
 // ==================== NAVIGATION ====================
-function initNavigation() {
+function initNav() {
   document.querySelectorAll('.nav-item').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const tab = btn.dataset.tab;
-      switchTab(tab);
-    });
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
 }
 
 function switchTab(tab) {
-  document.querySelectorAll('.tab-content-page').forEach(s => s.classList.add('hidden'));
-  document.querySelectorAll('.tab-content-page').forEach(s => s.classList.remove('active'));
-  const target = document.getElementById(tab + '-tab');
-  if (target) { target.classList.remove('hidden'); target.classList.add('active'); }
-
+  document.querySelectorAll('.tab-page').forEach(s => s.classList.add('hidden'));
+  document.querySelectorAll('.tab-page').forEach(s => s.classList.remove('active'));
+  const tgt = document.getElementById(tab + '-tab');
+  if (tgt) { tgt.classList.remove('hidden'); tgt.classList.add('active'); }
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.querySelector(`.nav-item[data-tab="${tab}"]`)?.classList.add('active');
-
-  if (tab === 'explore' && APP.map) {
-    setTimeout(() => APP.map.invalidateSize(), 100);
-  }
+  const navBtn = document.querySelector(`.nav-item[data-tab="${tab}"]`);
+  if (navBtn) navBtn.classList.add('active');
+  if (tab === 'explore' && GM.map) setTimeout(() => GM.map.invalidateSize(), 150);
 }
+
+window.switchTab = switchTab;
 
 // ==================== MAP ====================
 function initMap() {
-  const center = [48.1486, 17.1077];
-  APP.map = L.map('map', {
-    center, zoom: 14,
-    zoomControl: false,
-    attributionControl: false
+  GM.map = L.map('map', {
+    center: [48.1486, 17.1077],
+    zoom: 14,
+    zoomControl: false
   });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19
-  }).addTo(APP.map);
+  }).addTo(GM.map);
+  L.control.zoom({ position: 'topright' }).addTo(GM.map);
 
-  L.control.zoom({ position: 'topright' }).addTo(APP.map);
-
-  APP.restaurants.forEach(r => {
+  GM.restos.forEach(r => {
     const icon = L.divIcon({
-      className: 'custom-marker',
+      className: 'gm-marker',
       html: `<div style="
-        width:40px;height:40px;border-radius:50%;
+        width:42px;height:42px;border-radius:50%;
         background:var(--accent,#C17B4E);color:#fff;
         display:flex;align-items:center;justify-content:center;
-        font-weight:700;font-size:14px;box-shadow:0 2px 12px rgba(0,0,0,0.2);
+        font-weight:700;font-size:15px;box-shadow:0 3px 12px rgba(0,0,0,0.25);
         border:3px solid #fff;
-      ">${r.name.charAt(0)}</div>`,
-      iconSize: [40, 40],
-      iconAnchor: [20, 40]
+      ">${gName(r).charAt(0)}</div>`,
+      iconSize: [42, 42],
+      iconAnchor: [21, 42]
     });
-    const marker = L.marker([r.lat, r.lon], { icon }).addTo(APP.map);
-    marker.on('click', () => openDetail(r));
-    APP.markers.push({ marker, resto: r });
+    const m = L.marker([r.lat, r.lon], { icon }).addTo(GM.map);
+    m.on('click', () => openDetail(r));
+    GM.markers.push({ marker: m, resto: r });
   });
 }
 
 // ==================== VIEW TOGGLE ====================
 function initViewToggle() {
-  const mapBtn = document.getElementById('map-btn');
-  const listBtn = document.getElementById('list-btn');
-  const mapCont = document.getElementById('map-container');
-  const listCont = document.getElementById('list-container');
-
-  mapBtn?.addEventListener('click', () => {
-    mapBtn.classList.add('active'); listBtn.classList.remove('active');
-    mapCont.classList.remove('hidden'); listCont.classList.add('hidden');
-    setTimeout(() => APP.map?.invalidateSize(), 150);
+  const mb = document.getElementById('map-btn');
+  const lb = document.getElementById('list-btn');
+  const mc = document.getElementById('map-container');
+  const lc = document.getElementById('list-container');
+  if (!mb || !lb) return;
+  mb.addEventListener('click', () => {
+    mb.classList.add('active'); lb.classList.remove('active');
+    mc.classList.remove('hidden'); lc.classList.add('hidden');
+    setTimeout(() => GM.map?.invalidateSize(), 150);
   });
-  listBtn?.addEventListener('click', () => {
-    listBtn.classList.add('active'); mapBtn.classList.remove('active');
-    mapCont.classList.add('hidden'); listCont.classList.remove('hidden');
+  lb.addEventListener('click', () => {
+    lb.classList.add('active'); mb.classList.remove('active');
+    mc.classList.add('hidden'); lc.classList.remove('hidden');
   });
 }
 
 // ==================== RESTAURANT LIST ====================
-function renderRestaurantList() {
+function renderList() {
   const cont = document.getElementById('restaurant-list');
   if (!cont) return;
-
-  cont.innerHTML = APP.restaurants.map(r => {
-    const name = tnested(r, 'name');
-    const cuisine = (Array.isArray(r.cuisine) ? r.cuisine.join(', ') : r.cuisine) || '';
-      const photo = (APP.photos[r.id] && APP.photos[r.id][0]) ? APP.photos[r.id][0].replace(/[?&]w=\d+(&h=\d+)?(&fit=crop)?(&crop=center)?/g, '') + '&w=180&h=180&fit=crop&crop=center' : '';
+  cont.innerHTML = GM.restos.map(r => {
+    const name = gName(r);
+    const photo = r.photos?.[0] || '';
+    const stars = '★'.repeat(Math.round(r.rating)) + '☆'.repeat(5 - Math.round(r.rating));
     return `
-      <div class="resto-card fade-up" data-id="${r.id}">
-        ${photo ? `<img src="${photo}" class="resto-card-img" alt="${name}" loading="lazy" onerror="this.style.display='none'">` : `<div class="resto-card-img" style="background:linear-gradient(135deg,var(--accent),#D9956B);display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:700">${name.charAt(0)}</div>`}
+      <div class="resto-card" data-id="${r.id}" data-aos="fade-up">
+        <div class="resto-card-img-wrap">
+          ${photo ? `<img src="${photo}" alt="${name}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;height:100%;font-size:24px\\'>${name.charAt(0)}</div>'">` : `<div style="background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;height:100%;font-size:24px">${name.charAt(0)}</div>`}
+        </div>
         <div class="resto-card-body">
-          <div class="resto-card-name">${name}</div>
-          <div class="resto-card-cuisine">${cuisine}</div>
+          <h3 class="resto-card-name">${name}</h3>
+          <p class="resto-card-cuisine">${(r.cuisine||[]).join(', ')}</p>
           <div class="resto-card-meta">
-            <span class="stars-row">${starsHTML(r.rating)} ${r.rating}</span>
-            <span>${r.reviews} ${t('restaurant.reviews')}</span>
+            <span class="stars-text">${stars}</span>
+            <span class="meta-rating">${r.rating}</span>
+            <span class="meta-sep">•</span>
+            <span class="meta-price">${r.price_range||'$$'}</span>
+            <span class="meta-sep">•</span>
+            <span class="meta-check">${r.avg_check||''}</span>
           </div>
         </div>
       </div>`;
   }).join('');
 
-  document.querySelectorAll('.resto-card').forEach(card => {
+  cont.querySelectorAll('.resto-card').forEach(card => {
     card.addEventListener('click', () => {
-      const resto = APP.restaurants.find(r => r.id === card.dataset.id);
-      if (resto) openDetail(resto);
+      const r = GM.restos.find(x => x.id === card.dataset.id);
+      if (r) openDetail(r);
     });
   });
 
-  // Cuisine filter chips
-  renderCuisineFilter();
+  setTimeout(() => AOS.refresh(), 100);
 }
 
 function renderCuisineFilter() {
   const cont = document.getElementById('cuisine-filter');
-  const cuisines = [...new Set(APP.restaurants.flatMap(r => r.cuisine || []))];
-  cont.innerHTML = `<button class="cuisine-chip active" data-cuisine="all">All</button>` +
-    cuisines.map(c => `<button class="cuisine-chip" data-cuisine="${c}">${c}</button>`).join('');
+  const cuis = [...new Set(GM.restos.flatMap(r => r.cuisine||[]))].sort();
+  cont.innerHTML = `<button class="cuisine-chip active" data-cuisine="all"><i class="fas fa-globe-europe"></i> All</button>` +
+    cuis.map(c => `<button class="cuisine-chip" data-cuisine="${c}">${c}</button>`).join('');
 
   cont.querySelectorAll('.cuisine-chip').forEach(chip => {
     chip.addEventListener('click', () => {
@@ -214,75 +215,62 @@ function renderCuisineFilter() {
 }
 
 function filterByCuisine(cuisine) {
-  const cont = document.getElementById('restaurant-list');
   document.querySelectorAll('.resto-card').forEach(card => {
-    const resto = APP.restaurants.find(r => r.id === card.dataset.id);
-    const match = cuisine === 'all' || (resto?.cuisine || []).includes(cuisine);
+    const r = GM.restos.find(x => x.id === card.dataset.id);
+    const match = cuisine === 'all' || (r?.cuisine||[]).includes(cuisine);
     card.style.display = match ? '' : 'none';
   });
 }
 
-function starsHTML(rating) {
-  const s = Math.round(rating);
-  return '★'.repeat(s) + '☆'.repeat(5 - s);
-}
-
 // ==================== DETAIL OVERLAY ====================
-function openDetail(resto) {
-  APP.currentResto = resto;
-  const overlay = document.getElementById('detail-overlay');
-  overlay.classList.remove('hidden');
+function openDetail(r) {
+  GM.currentResto = r;
+  const ol = document.getElementById('detail-overlay');
+  ol.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+  document.getElementById('detail-name').textContent = gName(r);
+  document.getElementById('detail-address').textContent = r.address || '';
+  document.getElementById('meta-stars').textContent = '★'.repeat(Math.round(r.rating)) + '☆'.repeat(5-Math.round(r.rating)) + ' ' + r.rating;
+  document.getElementById('meta-price').textContent = r.price_range || '$$';
+  document.getElementById('meta-check').textContent = r.avg_check ? 'Ček: ' + r.avg_check : '';
+  document.getElementById('detail-route-btn').href = `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lon}`;
 
-  document.getElementById('detail-name').textContent = tnested(resto, 'name');
-  document.getElementById('detail-address').textContent = resto.address || '';
-  document.getElementById('detail-stars').textContent = starsHTML(resto.rating);
-  document.getElementById('detail-rating-value').textContent = resto.rating;
-  document.getElementById('detail-reviews-count').textContent = `(${resto.reviews})`;
-
-  // Cuisine tags
-  const tagsCont = document.getElementById('detail-cuisine-tags');
-  tagsCont.innerHTML = (resto.cuisine || []).map(c =>
-    `<span class="cuisine-tag">${c}</span>`
-  ).join('');
+  const tags = document.getElementById('detail-cuisine-tags');
+  tags.innerHTML = (r.cuisine||[]).map(c => `<span class="cuisine-tag">${c}</span>`).join('');
 
   // Carousel
-  renderCarousel(resto);
+  renderCarousel(r);
+
+  // Tabs
   renderDetailTabs();
+  document.querySelectorAll('.dtab').forEach((t,i) => t.classList.toggle('active', i===0));
+  document.querySelectorAll('.dtab-panel').forEach((p,i) => p.classList.toggle('active', i===0));
+  document.getElementById('res-date').value = new Date().toISOString().split('T')[0];
 
-  // Reset to first tab
-  document.querySelectorAll('.dtab').forEach((t, i) => t.classList.toggle('active', i === 0));
-  document.querySelectorAll('.dtab-panel').forEach((p, i) => p.classList.toggle('active', i === 0));
-
-  setTimeout(() => overlay.scrollTop = 0, 50);
+  setTimeout(() => ol.scrollTop = 0, 50);
 }
 
 function closeDetail() {
   document.getElementById('detail-overlay').classList.add('hidden');
   document.body.style.overflow = '';
-  APP.currentResto = null;
-  if (APP.swiper) APP.swiper.destroy();
-  APP.swiper = null;
+  GM.currentResto = null;
+  if (GM.swiper) { GM.swiper.destroy(); GM.swiper = null; }
 }
+window.openDetail = openDetail;
+window.closeDetail = closeDetail;
 
-function renderCarousel(resto) {
+function renderCarousel(r) {
   const slides = document.getElementById('carousel-slides');
-  const photos = APP.photos[resto.id] || resto.photos || [];
-  if (photos.length === 0) {
-    slides.innerHTML = `<div class="swiper-slide" style="background:linear-gradient(135deg,var(--accent),#D9956B);display:flex;align-items:center;justify-content:center;color:#fff;font-size:32px;font-weight:700">${resto.name?.charAt(0) || '🍽️'}</div>`;
-  } else {
-    slides.innerHTML = photos.map(p =>
-      `<div class="swiper-slide"><img src="${p}" alt="" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg,var(--accent),#D9956B)'"></div>`
-    ).join('');
-  }
-
-  if (APP.swiper) APP.swiper.destroy();
-  APP.swiper = new Swiper('#detail-carousel', {
+  const photos = r.photos || gmMock.getPhotos(r.id, 4);
+  slides.innerHTML = photos.map(p =>
+    `<div class="swiper-slide"><img src="${p}" alt="" loading="lazy" onerror="this.style.background='var(--accent)'"></div>`
+  ).join('');
+  if (GM.swiper) GM.swiper.destroy();
+  GM.swiper = new Swiper('#detail-carousel', {
     slidesPerView: 1,
-    spaceBetween: 0,
     loop: photos.length > 1,
     pagination: { el: '.swiper-pagination', clickable: true },
-    autoplay: photos.length > 1 ? { delay: 4000, disableOnInteraction: false } : false
+    autoplay: photos.length > 1 ? { delay: 3500 } : false
   });
 }
 
@@ -294,161 +282,166 @@ function initDetailTabs() {
       document.querySelectorAll('.dtab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       document.querySelectorAll('.dtab-panel').forEach(p => p.classList.remove('active'));
-      document.getElementById('dtab-' + tab)?.classList.add('active');
+      const panel = document.getElementById('dtab-' + tab);
+      if (panel) panel.classList.add('active');
     });
   });
 }
 
 function renderDetailTabs() {
-  const r = APP.currentResto;
+  const r = GM.currentResto;
   if (!r) return;
 
   // Description
-  const descCont = document.getElementById('dtab-description');
-  const desc = tnested(r, 'description') || '';
-  const features = r.features || [];
-  descCont.innerHTML = `
-    <p class="desc-text">${desc}</p>
-    ${features.length ? `<div class="features-grid">${features.map(f => `<span class="feature-pill">${f}</span>`).join('')}</div>` : ''}
-    <div class="hours-line">
-      <span>🕐</span> <span>${r.hours || '—'}</span>
-    </div>`;
+  document.getElementById('dtab-description').innerHTML = `
+    <p class="desc-text">${r.description_en || r.description_sk || ''}</p>
+    <div class="features-grid">${(r.features||[]).map(f => `<span class="feature-pill"><i class="fas fa-check-circle"></i> ${f}</span>`).join('')}</div>
+    <div class="hours-line"><i class="fas fa-clock"></i> ${r.hours || '—'}</div>`;
 
   // Menu
-  const menuCont = document.getElementById('dtab-menu');
-  const menu = r.menu || [];
-  menuCont.innerHTML = menu.length ? menu.map(m => `
-    <div class="menu-item">
-      <div><div class="menu-item-name">${tnested(m, 'name') || m.name}</div></div>
-      <div class="menu-item-price">${m.price}</div>
-    </div>`).join('') : '<p style="color:var(--text-muted)">Menu not available</p>';
+  document.getElementById('dtab-menu').innerHTML = (r.menu||[]).map(m => `
+    <div class="menu-item"><div class="menu-info"><strong>${m.name}</strong></div><span class="menu-price">${m.price}</span></div>
+  `).join('') || '<p class="empty-text">Menu bude čoskoro</p>';
 
-  // Reservation — fill time slots
-  const timeSelect = document.getElementById('res-time');
-  timeSelect.innerHTML = generateTimeSlots();
-
-  // Set date to today
-  document.getElementById('res-date').value = new Date().toISOString().split('T')[0];
+  // Time slots
+  const ts = document.getElementById('res-time');
+  ts.innerHTML = '';
+  for (let h = 11; h <= 22; h++) {
+    ts.innerHTML += `<option>${String(h).padStart(2,'0')}:00</option><option>${String(h).padStart(2,'0')}:30</option>`;
+  }
 
   // Reviews
   renderReviews(r);
 }
 
-function generateTimeSlots() {
-  let html = '';
-  for (let h = 11; h <= 22; h++) {
-    html += `<option>${String(h).padStart(2,'0')}:00</option>`;
-    html += `<option>${String(h).padStart(2,'0')}:30</option>`;
-  }
-  return html;
-}
-
 function renderReviews(r) {
-  const cont = document.getElementById('dtab-reviews');
-  const reviews = r.reviews_data || [
+  const revs = [
     { author: 'Anna K.', rating: 5, date: '2026-04-20', text: 'Skvelé jedlo a príjemná obsluha. Určite sa vrátime!' },
     { author: 'Peter M.', rating: 4, date: '2026-04-15', text: 'Dobrá atmosféra, jedlo výborné. Trochu dlhšie čakanie.' },
     { author: 'Jana S.', rating: 5, date: '2026-04-10', text: 'Najlepšia reštaurácia v okolí. Odporúčam rezervovať vopred.' }
   ];
-  cont.innerHTML = `<h4 style="font-size:18px;font-weight:700;margin-bottom:14px">${t('restaurant.reviews')} (${r.reviews})</h4>` +
-    reviews.map(rv => `
+  document.getElementById('dtab-reviews').innerHTML = `<h4 style="margin:0 0 12px;font-weight:700">${gt('restaurant.reviews')} (${r.reviews})</h4>` +
+    revs.map(rv => `
       <div class="review-card">
         <div class="review-header">
           <div class="review-avatar">${rv.author.charAt(0)}</div>
           <div><div class="review-name">${rv.author}</div><div class="review-date">${rv.date}</div></div>
         </div>
-        <div class="review-stars">${starsHTML(rv.rating)}</div>
+        <div class="review-stars">${'★'.repeat(rv.rating)}${'☆'.repeat(5-rv.rating)}</div>
         <div class="review-text">${rv.text}</div>
       </div>`).join('');
 }
 
 // ==================== BOOKING ====================
 function submitBooking() {
-  const r = APP.currentResto;
-  const date = document.getElementById('res-date').value;
-  const time = document.getElementById('res-time').value;
-  const guests = document.getElementById('res-guests').value;
-  showToast(`✅ ${t('reservation.success')} — ${r.name}, ${date} ${time}, ${guests} guests`);
-}
-
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
+  const r = GM.currentResto;
+  if (!r) return;
+  const booking = {
+    id: Date.now(),
+    resto: gName(r),
+    restoId: r.id,
+    date: document.getElementById('res-date').value,
+    time: document.getElementById('res-time').value,
+    guests: document.getElementById('res-guests').value,
+    created: new Date().toISOString()
+  };
+  const bookings = JSON.parse(localStorage.getItem('gm-bookings') || '[]');
+  bookings.push(booking);
+  localStorage.setItem('gm-bookings', JSON.stringify(bookings));
+  showToast(`✅ ${gt('reservation.success')} — ${booking.resto}, ${booking.date} ${booking.time}`);
+  closeDetail();
+  renderProfile();
 }
 window.submitBooking = submitBooking;
 
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
 // ==================== PROMOTIONS ====================
-function renderPromotions() {
+function renderPromos() {
   const cont = document.getElementById('promo-list');
   const promos = [
-    { icon: '☕', title: 'Káva 1+1 zadarmo', desc: 'Pri každom hlavnom jedle dostanete druhú kávu zdarma.', valid: '2026-05-31', color: '#A05E35' },
-    { icon: '🍝', title: 'Obedné menu —20%', desc: 'Pondelok–Piatok 11:00–14:00. Zľava 20% na celé obedné menu.', valid: '2026-06-15', color: '#C17B4E' },
-    { icon: '🍷', title: 'Happy Hour 17:00–19:00', desc: 'Všetky nápoje s 30% zľavou. Víno, pivo, kokteily.', valid: '2026-05-30', color: '#D9956B' }
+    { icon: 'fa-coffee', title: 'Káva 1+1 zadarmo', desc: 'Pri každom hlavnom jedle dostanete druhú kávu zdarma.', valid: '2026-05-31', bg: 'linear-gradient(135deg,#A05E35,#C17B4E)' },
+    { icon: 'fa-utensils', title: 'Obedné menu —20%', desc: 'Pondelok–Piatok 11:00–14:00. Zľava 20% na celé obedné menu.', valid: '2026-06-15', bg: 'linear-gradient(135deg,#C17B4E,#D9956B)' },
+    { icon: 'fa-wine-glass-alt', title: 'Happy Hour 17:00–19:00', desc: 'Všetky nápoje s 30% zľavou. Víno, pivo, kokteily.', valid: '2026-05-30', bg: 'linear-gradient(135deg,#D9956B,#E0B08A)' }
   ];
-  cont.innerHTML = promos.map(p => `
-    <div class="promo-card" data-aos="fade-up">
-      <div class="promo-banner" style="background:linear-gradient(135deg,${p.color},${p.color}dd)">${p.icon}</div>
+  cont.innerHTML = promos.map((p,i) => `
+    <div class="promo-card" data-aos="fade-up" data-aos-delay="${i*100}">
+      <div class="promo-banner" style="background:${p.bg}"><i class="fas ${p.icon}"></i></div>
       <div class="promo-body">
         <div class="promo-title">${p.title}</div>
         <div class="promo-desc">${p.desc}</div>
-        <div class="promo-valid">${t('promotions.valid_until')}: ${p.valid}</div>
+        <div class="promo-valid">${gt('promotions.valid_until')}: ${p.valid}</div>
       </div>
     </div>`).join('');
-  setTimeout(() => AOS.refresh(), 100);
 }
 
 // ==================== NEWS ====================
 function renderNews() {
   const cont = document.getElementById('news-list');
   const news = [
-    { date: '2026-05-03', title: 'Nová reštaurácia: Galileo Restaurant', text: 'V historickom centre otvorili novú taliansku reštauráciu s domácou cestovinou a pizzou z drevenej pece. Skvelé hodnotenie 4.7 ⭐.' },
-    { date: '2026-04-28', title: 'Sezónne menu — jar 2026', text: 'Všetky reštaurácie prinášajú jarné sezónne menu. Čakajte čerstvé špargle, divoký cesnak a ľahké šaláty.' },
-    { date: '2026-04-20', title: 'GastroMap dosiahol 1 000+ recenzií', text: 'Ďakujeme našej komunite za vyše 1 000 overených recenzií! Každá recenzia pomáha objavovať najlepšie miesta.' }
+    { date: '2026-05-04', title: '🍕 Nové letné menu v Papaya — zľava 15% na Pho Bo', text: 'Reštaurácia Papaya Asian Bistro prináša letné menu s čerstvými ázijskými špecialitami. Zľava platí do konca mája pri rezervácii cez GastroMap.' },
+    { date: '2026-05-02', title: '🥇 DAX získal cenu „Najlepšie raňajky v Bratislave 2026"', text: 'Kaviareň a reštaurácia DAX na Hviezdoslavovom námestí vyhrala prestížnu gastro cenu. Eggs Benedict a avokádový toast sú top!' },
+    { date: '2026-04-28', title: '🌿 TUSI spúšťa vegánske jarné rolky', text: 'TUSI Vietnamese prináša vegánske letné rolky — čerstvé suroviny, bez mäsa, plné chuti. Dostupné denne od 11:00 na Obchodnej 38.' },
+    { date: '2026-04-25', title: '🍷 Galileo: Večer talianskeho vína — 28. mája', text: 'Reštaurácia Galileo pozýva na špeciálny večer. Degustácia 5 vín, domáca pasta a živá hudba. Rezervácia už otvorená!' }
   ];
-  cont.innerHTML = news.map(n => `
-    <div class="news-card" data-aos="fade-up">
+  cont.innerHTML = news.map((n,i) => `
+    <div class="news-card" data-aos="fade-up" data-aos-delay="${i*100}">
       <div class="news-date">${n.date}</div>
       <div class="news-title">${n.title}</div>
       <div class="news-text">${n.text}</div>
     </div>`).join('');
-  setTimeout(() => AOS.refresh(), 100);
 }
 
 // ==================== PROFILE ====================
 function renderProfile() {
-  const cont = document.getElementById('profile-sections');
-  const items = [
-    { icon: '📋', key: 'profile.my_reservations', text: 'Moje rezervácie' },
-    { icon: '🎫', key: 'profile.used_promotions', text: 'Použité akcie' },
-    { icon: '⭐', key: 'profile.points', text: 'Nazhromaždené body' },
-    { icon: '⚙️', key: 'profile.settings', text: 'Nastavenia' }
-  ];
-  cont.innerHTML = items.map(i => `
+  const bookings = JSON.parse(localStorage.getItem('gm-bookings') || '[]');
+  const pbCont = document.getElementById('profile-bookings');
+  pbCont.innerHTML = bookings.length ? `
+    <h3 style="font-weight:700;margin-bottom:12px"><i class="fas fa-calendar-alt"></i> ${gt('profile.my_reservations')}</h3>
+    ${bookings.slice(-5).reverse().map(b => `
+      <div class="booking-row">
+        <div><strong>${b.resto}</strong></div>
+        <div class="booking-meta">${b.date} ${b.time} — ${b.guests} guests</div>
+      </div>`).join('')}
+  ` : `<p style="color:var(--text-muted);padding:12px 0">Žiadne rezervácie. <a href="#" onclick="switchTab('explore')" style="color:var(--accent)">Objavte reštaurácie</a></p>`;
+
+  const sec = document.getElementById('profile-sections');
+  sec.innerHTML = [
+    { icon: 'fa-ticket-alt', key: 'profile.used_promotions', txt: 'Použité akcie' },
+    { icon: 'fa-cog', key: 'profile.settings', txt: 'Nastavenia' }
+  ].map(i => `
     <div class="profile-item">
-      <span class="profile-item-icon">${i.icon}</span>
-      <span class="profile-item-text">${t(i.key) || i.text}</span>
-      <span class="profile-item-arrow">›</span>
+      <span class="profile-item-icon"><i class="fas ${i.icon}"></i></span>
+      <span class="profile-item-text">${gt(i.key) || i.txt}</span>
+      <span class="profile-item-arrow"><i class="fas fa-chevron-right"></i></span>
     </div>`).join('');
 }
 
 // ==================== BOTTOM SHEET ====================
-function initBottomSheet() {
-  const sheet = document.getElementById('bottom-sheet');
-  const handle = sheet?.querySelector('.sheet-handle');
-  let startY = 0, sheetTop = 0;
-
-  handle?.addEventListener('click', () => sheet.classList.toggle('collapsed'));
-
-  sheet?.addEventListener('touchstart', e => {
-    startY = e.touches[0].clientY;
-    sheetTop = sheet.getBoundingClientRect().top;
-  });
-
-  sheet?.addEventListener('touchmove', e => {
-    const dy = e.touches[0].clientY - startY;
-    if (dy > 30) sheet.classList.add('collapsed');
-    else if (dy < -30) sheet.classList.remove('collapsed');
-  });
+function initSheets() {
+  // No bottom sheet — removed. Markers open detail directly.
 }
+
+// ==================== DIAGNOSTICS ====================
+function runAutoDiag() {
+  setTimeout(() => {
+    const d = gmMock.runDiagnostics();
+    const cont = document.getElementById('diag-results');
+    if (!cont) return;
+    cont.innerHTML = `<div style="padding:8px;font-size:13px">
+      <strong>${d.pass}/${d.total} PASS</strong>${d.fail > 0 ? ` | 🔴 ${d.fail} FAIL` : ''}
+    </div>` +
+    d.results.map(r => `<div style="font-size:12px;padding:2px 8px;color:${r.status==='PASS'?'#2e7d32':'#c62828'}">${r.status==='PASS'?'✅':'❌'} ${r.name}${r.error ? ' — '+r.error : ''}</div>`).join('');
+    cont.classList.remove('hidden');
+  }, 1500);
+}
+
+function toggleDiag() {
+  document.getElementById('diag-results').classList.toggle('hidden');
+}
+window.toggleDiag = toggleDiag;

@@ -6,30 +6,19 @@
       "name_sk": "Papaya Ázijská Krčma",
       "name_ru": "Papaya Азиатский Бистро",
       "cuisine": ["asian", "thai", "vietnamese"],
-      "cuisine_sk": ["ázijská", "thajská", "vietnamská"],
-      "cuisine_ru": ["азиатская", "тайская", "вьетнамская"],
-      "lat": 48.1503375,
-      "lon": 17.111095,
+      "lat": 48.1503375, "lon": 17.111095,
       "address": "Ventúrska 5, Bratislava",
-      "address_sk": "Ventúrska 5, Bratislava",
       "hours": "Mo-Su 11:00-23:00",
-      "rating": 4.6,
-      "reviews": 342,
-      "price_range": "$$",
-      "photos": [
-        "https://images.unsplash.com/photo-1517248135467-4c7edcad0f22?w=600&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1414235077428-338989a2e8fd?w=600&h=400&fit=crop"
-      ],
-      "description_en": "Modern Asian bistro in the heart of Old Town. Fresh ingredients, authentic flavors, and a cozy atmosphere perfect for lunch or dinner.",
-      "description_sk": "Moderná ázijská krčma v centre Starého Mesta. Čerstvé suroviny, autentické chute a útulná atmosféra ideálna na obed alebo večeru.",
-      "description_ru": "Современный азиатский бистро в центре Старого города. Свежие ингредиенты, аутентичные вкусы и уютная атмосфера идеальны для обеда или ужина.",
+      "rating": 4.6, "reviews": 342,
+      "price_range": "$$", "avg_check": "12-18€",
+      "photos": [],
+      "description_en": "Modern Asian bistro in Old Town. Fresh ingredients, authentic flavors, cozy atmosphere.",
+      "description_sk": "Moderná ázijská krčma v Starom Meste. Čerstvé suroviny, autentické chute, útulná atmosféra.",
+      "description_ru": "Азиатский бистро в центре. Свежие ингредиенты, аутентичные вкусы, уют.",
       "menu": [
-        {"name": "Pho Bo", "price": "8.90€", "name_sk": "Pho Bo", "name_ru": "Фо Бо"},
-        {"name": "Pad Thai", "price": "9.50€", "name_sk": "Pad Thai", "name_ru": "Пад Тай"},
-        {"name": "Spring Rolls", "price": "5.90€", "name_sk": "Jarné rolky", "name_ru": "Весенние роллы"}
+        {"name": "Pho Bo", "price": "8.90€"}, {"name": "Pad Thai", "price": "9.50€"}, {"name": "Spring Rolls", "price": "5.90€"}, {"name": "Mango Sticky Rice", "price": "6.50€"}
       ],
-      "features": ["wifi", "terrace", "reservations", "vegan_options"]
+      "features": ["wifi", "terrace", "vegan_options"]
     },
     {
       "id": "slovenska-krcma",
@@ -37,30 +26,19 @@
       "name_sk": "1. Slovenská Krčma",
       "name_ru": "1. Словацкая Корчма",
       "cuisine": ["slovak", "european"],
-      "cuisine_sk": ["slovenská", "európska"],
-      "cuisine_ru": ["словацкая", "европейская"],
-      "lat": 48.1500185,
-      "lon": 17.1124846,
+      "lat": 48.1500185, "lon": 17.1124846,
       "address": "Michalská 13, Bratislava",
-      "address_sk": "Michalská 13, Bratislava",
       "hours": "Mo-Su 10:00-24:00",
-      "rating": 4.4,
-      "reviews": 487,
-      "price_range": "$$",
-      "photos": [
-        "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1567521464027-f127ff144326?w=600&h=400&fit=crop"
-      ],
-      "description_en": "Traditional Slovak cuisine in a historic cellar. Authentic bryndzové halušky, kapustnica, and local beers in a rustic atmosphere.",
-      "description_sk": "Tradičná slovenská kuchyňa v historickej pivnici. Autentické bryndzové halušky, kapustnica a miestne piva v rustikálnej atmosfére.",
-      "description_ru": "Традиционная словацкая кухня в историческом погребе. Аутентичные брындзовые галушки, капустница и местное пиво в рустикальной атмосфере.",
+      "rating": 4.4, "reviews": 487,
+      "price_range": "$$", "avg_check": "10-15€",
+      "photos": [],
+      "description_en": "Traditional Slovak cuisine in historic cellar. Bryndzové halušky, kapustnica, local beers.",
+      "description_sk": "Tradičná slovenská kuchyňa v historickej pivnici. Bryndzové halušky, kapustnica, miestne piva.",
+      "description_ru": "Словацкая кухня в историческом погребе. Брындзовые галушки, капустница, пиво.",
       "menu": [
-        {"name": "Bryndzové Halušky", "price": "7.50€", "name_sk": "Bryndzové Halušky", "name_ru": "Брындзовые Галушки"},
-        {"name": "Kapustnica", "price": "5.90€", "name_sk": "Kapustnica", "name_ru": "Капустница"},
-        {"name": "Grilled Pork Knee", "price": "12.90€", "name_sk": "Pečené Koleno", "name_ru": "Запеченное Колено"}
+        {"name": "Bryndzové Halušky", "price": "7.50€"}, {"name": "Kapustnica", "price": "5.90€"}, {"name": "Pečené Koleno", "price": "12.90€"}, {"name": "Pirohy", "price": "6.50€"}
       ],
-      "features": ["wifi", "historic", "live_music", "local_beer"]
+      "features": ["wifi", "live_music", "local_beer"]
     },
     {
       "id": "tusi",
@@ -68,28 +46,17 @@
       "name_sk": "TUSI Vietnamská",
       "name_ru": "TUSI Вьетнамская",
       "cuisine": ["vietnamese", "asian"],
-      "cuisine_sk": ["vietnamská", "ázijská"],
-      "cuisine_ru": ["вьетнамская", "азиатская"],
-      "lat": 48.149089,
-      "lon": 17.110293,
+      "lat": 48.149089, "lon": 17.110293,
       "address": "Obchodná 38, Bratislava",
-      "address_sk": "Obchodná 38, Bratislava",
       "hours": "Mo-Su 11:00-22:00",
-      "rating": 4.3,
-      "reviews": 256,
-      "price_range": "$",
-      "photos": [
-        "https://images.unsplash.com/photo-1582878826629-29b7ad1f43e2?w=600&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1562565652-a0d8f0c59eb3?w=600&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1546549032-9571fd6499e3?w=600&h=400&fit=crop"
-      ],
-      "description_en": "Authentic Vietnamese street food. Fresh pho, banh mi, and summer rolls made with love by native chefs.",
-      "description_sk": "Autentické vietnamské street food. Čerstvé pho, banh mi a jarné rolky s láskou od miestnych šéfkuchárov.",
-      "description_ru": "Аутентичный вьетнамский стрит-фуд. Свежий фо, бань ми и летние роллы с любовью от местных шеф-поваров.",
+      "rating": 4.3, "reviews": 256,
+      "price_range": "$", "avg_check": "8-12€",
+      "photos": [],
+      "description_en": "Authentic Vietnamese street food. Pho, banh mi, summer rolls.",
+      "description_sk": "Autentické vietnamské street food. Pho, banh mi, letné rolky.",
+      "description_ru": "Вьетнамский стрит-фуд. Фо, бань ми, роллы.",
       "menu": [
-        {"name": "Pho Ga", "price": "6.50€", "name_sk": "Pho Ga", "name_ru": "Фо Га"},
-        {"name": "Banh Mi", "price": "4.90€", "name_sk": "Banh Mi", "name_ru": "Бань Ми"},
-        {"name": "Summer Rolls", "price": "4.50€", "name_sk": "Letné Rolky", "name_ru": "Летние Роллы"}
+        {"name": "Pho Ga", "price": "6.50€"}, {"name": "Banh Mi", "price": "4.90€"}, {"name": "Summer Rolls", "price": "4.50€"}, {"name": "Bun Cha", "price": "7.90€"}
       ],
       "features": ["quick_service", "takeaway", "vegan_options"]
     },
@@ -99,28 +66,17 @@
       "name_sk": "DAX Kaviareň & Reštaurácia",
       "name_ru": "DAX Кафе и Ресторан",
       "cuisine": ["european", "cafe"],
-      "cuisine_sk": ["európska", "kaviareň"],
-      "cuisine_ru": ["европейская", "кафе"],
-      "lat": 48.1495844,
-      "lon": 17.1099765,
+      "lat": 48.1495844, "lon": 17.1099765,
       "address": "Hviezdoslavovo námestie 7, Bratislava",
-      "address_sk": "Hviezdoslavovo námestie 7, Bratislava",
       "hours": "Mo-Su 08:00-22:00",
-      "rating": 4.5,
-      "reviews": 312,
-      "price_range": "$$",
-      "photos": [
-        "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1495474477109-de6e9e1c69a5?w=600&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=600&h=400&fit=crop"
-      ],
-      "description_en": "Stylish cafe and restaurant with a beautiful terrace. Great coffee, homemade cakes, and European dishes in a modern setting.",
-      "description_sk": "Štýlová kaviareň a reštaurácia s krásnou terasou. Výborná káva, domáce koláče a európske jedlá v modernom prostredí.",
-      "description_ru": "Стильное кафе и ресторан с красивой террасой. Отличный кофе, домашние торты и европейские блюда в современном интерьере.",
+      "rating": 4.5, "reviews": 312,
+      "price_range": "$$", "avg_check": "10-16€",
+      "photos": [],
+      "description_en": "Stylish cafe with beautiful terrace. Coffee, cakes, European dishes.",
+      "description_sk": "Štýlová kaviareň s terasou. Káva, koláče, európske jedlá.",
+      "description_ru": "Стильное кафе с террасой. Кофе, торты, европейские блюда.",
       "menu": [
-        {"name": "Eggs Benedict", "price": "8.90€", "name_sk": "Vajcia Benedict", "name_ru": "Яйца Бенедикт"},
-        {"name": "Avocado Toast", "price": "7.50€", "name_sk": "Avokádo Toast", "name_ru": "Авокадо Тост"},
-        {"name": "Pasta Carbonara", "price": "11.50€", "name_sk": "Cestoviny Carbonara", "name_ru": "Паста Карбонара"}
+        {"name": "Eggs Benedict", "price": "8.90€"}, {"name": "Avocado Toast", "price": "7.50€"}, {"name": "Pasta Carbonara", "price": "11.50€"}, {"name": "Cheesecake", "price": "5.50€"}
       ],
       "features": ["wifi", "terrace", "brunch", "coffee_specialty"]
     },
@@ -130,28 +86,17 @@
       "name_sk": "Galileo Reštaurácia",
       "name_ru": "Галилео Ресторан",
       "cuisine": ["italian", "mediterranean"],
-      "cuisine_sk": ["talianska", "stredomorská"],
-      "cuisine_ru": ["итальянская", "средиземноморская"],
-      "lat": 48.1473229,
-      "lon": 17.1074899,
+      "lat": 48.1473229, "lon": 17.1074899,
       "address": "Sedlárska 3, Bratislava",
-      "address_sk": "Sedlárska 3, Bratislava",
       "hours": "Mo-Su 12:00-23:00",
-      "rating": 4.7,
-      "reviews": 423,
-      "price_range": "$$$",
-      "photos": [
-        "https://images.unsplash.com/photo-1595809003300-921a41a7c825?w=600&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1567620905732-2d1ec765f61c?w=600&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&h=400&fit=crop"
-      ],
-      "description_en": "Fine dining Italian restaurant with handmade pasta and wood-fired pizza. Premium wines and romantic atmosphere.",
-      "description_sk": "Luxusná talianska reštaurácia s domácou cestovinou a pizzou z drevenej pece. Prémiové vína a romantická atmosféra.",
-      "description_ru": "Изысканный итальянский ресторан с домашней пастой и пиццей из дровяной печи. Премиальные вина и романтическая атмосфера.",
+      "rating": 4.7, "reviews": 423,
+      "price_range": "$$$", "avg_check": "18-30€",
+      "photos": [],
+      "description_en": "Fine dining Italian. Handmade pasta, wood-fired pizza, premium wines.",
+      "description_sk": "Luxusná talianska reštaurácia. Domáca cestovina, pizza z pece, vína.",
+      "description_ru": "Изысканный итальянский. Паста, пицца из печи, вина.",
       "menu": [
-        {"name": "Truffle Pasta", "price": "18.90€", "name_sk": "Cestoviny s Hríbmi", "name_ru": "Паста с Трюфелем"},
-        {"name": "Margherita Pizza", "price": "12.90€", "name_sk": "Pizza Margherita", "name_ru": "Пицца Маргарита"},
-        {"name": "Tiramisu", "price": "6.50€", "name_sk": "Tiramisu", "name_ru": "Тирамису"}
+        {"name": "Truffle Pasta", "price": "18.90€"}, {"name": "Margherita Pizza", "price": "12.90€"}, {"name": "Tiramisu", "price": "6.50€"}, {"name": "Bruschetta", "price": "7.50€"}
       ],
       "features": ["wifi", "romantic", "wine_cellar", "wood_fired_oven"]
     },
@@ -161,28 +106,17 @@
       "name_sk": "Reštaurácia Fellini",
       "name_ru": "Ресторан Феллини",
       "cuisine": ["italian", "seafood"],
-      "cuisine_sk": ["talianska", "morské plody"],
-      "cuisine_ru": ["итальянская", "морепродукты"],
-      "lat": 48.1470794,
-      "lon": 17.1102786,
+      "lat": 48.1470794, "lon": 17.1102786,
       "address": "Gorkého 6, Bratislava",
-      "address_sk": "Gorkého 6, Bratislava",
       "hours": "Mo-Su 12:00-23:00",
-      "rating": 4.5,
-      "reviews": 289,
-      "price_range": "$$$",
-      "photos": [
-        "https://images.unsplash.com/photo-1565558825493-5a151d60f05d?w=600&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1579631542720-3a87824fff85?w=600&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop"
-      ],
-      "description_en": "Authentic Italian restaurant specializing in fresh seafood and handmade pasta. Great wine selection and elegant atmosphere.",
-      "description_sk": "Autentická talianska reštaurácia špecializujúca sa na čerstvé morské plody a domácu cestovinu. Skvelý výber vín a elegantná atmosféra.",
-      "description_ru": "Аутентичный итальянский ресторан, специализирующийся на свежих морепродуктах и домашней пасте. Отличный выбор вин и элегантная атмосфера.",
+      "rating": 4.5, "reviews": 289,
+      "price_range": "$$$", "avg_check": "20-35€",
+      "photos": [],
+      "description_en": "Italian seafood specialist. Fresh catch, handmade pasta, elegant.",
+      "description_sk": "Talianska špecialita na morské plody. Čerstvý úlovok, domáca pasta.",
+      "description_ru": "Итальянские морепродукты. Свежий улов, паста, элегантно.",
       "menu": [
-        {"name": "Seafood Risotto", "price": "16.90€", "name_sk": "Rizoto s Morskými Plodmi", "name_ru": "Ризотто с Морепродуктами"},
-        {"name": "Grilled Branzino", "price": "19.50€", "name_sk": "Grilovaný Branzino", "name_ru": "Гриль Бранзино"},
-        {"name": "Linguine Vongole", "price": "14.90€", "name_sk": "Linguine Vongole", "name_ru": "Лингвине Вонгола"}
+        {"name": "Seafood Risotto", "price": "16.90€"}, {"name": "Grilled Branzino", "price": "19.50€"}, {"name": "Linguine Vongole", "price": "14.90€"}, {"name": "Fritto Misto", "price": "13.50€"}
       ],
       "features": ["wifi", "seafood", "wine_selection", "elegant"]
     }
