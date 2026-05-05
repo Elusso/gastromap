@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GastroMap — Apple Design</title>
+  
+  <!-- Fonts: Inter + JetBrains Mono (Linear style) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;510;590&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9dDPLiNSlFvo0zHcudZs7U=" crossorigin=""/>
+  
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 22L22 7L12 2Z" stroke="#5e6ad2" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+        <span>GastroMap</span>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-section="home" aria-label="Главная">🏠</button>
+        <button class="nav-item" data-section="map" aria-label="Карта">🗺️</button>
+        <button class="nav-item" data-section="menu" aria-label="Меню">🍽️</button>
+        <button class="nav-item" data-section="reservations" aria-label="Бронирования">📅</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+    <section id="home" class="section active" data-aos="fade-up">
+      <div class="container">
+        <div class="hero" data-aos="zoom-in-up">
+          <h1 class="hero-title">Откройте вкусы города</h1>
+          <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">Лучшие рестораны — в красивом интерфейсе</p>
+          <div class="search-bar" data-aos="fade-up" data-aos-delay="400">
+            <input type="text" placeholder="Поиск по названию, кухне, метро...">
+            <button class="btn btn-primary">Найти</button>
+          </div>
+        </div>
+        <h2 class="section-title" data-aos="fade-up">Популярные места</h2>
+        <div class="card-grid">
+          <article class="card" data-aos="fade-up" data-aos-delay="100">
+            <div class="card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+              <span class="card-badge">⭐ 4.8</span>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">Sushi Bar Izumo</h3>
+              <p class="card-subtitle">Японская, Девятиначка</p>
+              <div class="card-meta">
+                <span class="icon-label">📍</span>
+                <span class="meta-text">М. Садовая</span>
+                <span class="icon-label">💰</span>
+                <span class="meta-text">3000₽</span>
+              </div>
+              <button class="btn btn-outline">Забронировать</button>
+            </div>
+          </article>
+          <article class="card" data-aos="fade-up" data-aos-delay="200">
+            <div class="card-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+              <span class="card-badge">⭐ 4.9</span>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">Le French</h3>
+              <p class="card-subtitle">Французская, Премиум</p>
+              <div class="card-meta">
+                <span class="icon-label">📍</span>
+                <span class="meta-text">М. Невский проспект</span>
+                <span class="icon-label">💰</span>
+                <span class="meta-text">6000₽</span>
+              </div>
+              <button class="btn btn-outline">Забронировать</button>
+            </div>
+          </article>
+          <article class="card" data-aos="fade-up" data-aos-delay="300">
+            <div class="card-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+              <span class="card-badge">⭐ 4.7</span>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">Olivier Garden</h3>
+              <p class="card-subtitle">Европейская, Садовая</p>
+              <div class="card-meta">
+                <span class="icon-label">📍</span>
+                <span class="meta-text">ул. Садовая, 23</span>
+                <span class="icon-label">💰</span>
+                <span class="meta-text">2500₽</span>
+              </div>
+              <button class="btn btn-outline">Забронировать</button>
+            </div>
+          </article>
+          <article class="card" data-aos="fade-up" data-aos-delay="400">
+            <div class="card-image" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+              <span class="card-badge">⭐ 4.6</span>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">Pierogi House</h3>
+              <p class="card-subtitle">Русская, Домашняя</p>
+              <div class="card-meta">
+                <span class="icon-label">📍</span>
+                <span class="meta-text">М. Лесной</span>
+                <span class="icon-label">💰</span>
+                <span class="meta-text">1500₽</span>
+              </div>
+              <button class="btn btn-outline">Забронировать</button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="map" class="section" data-aos="fade-up">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Карта ресторанов</h2>
+        <div id="map" class="map-container" data-aos="fade-up" data-aos-delay="200"></div>
+      </div>
+    </section>
+
+    <section id="menu" class="section" data-aos="fade-up">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Каталог блюд</h2>
+        <div class="filters" data-aos="fade-up" data-aos-delay="200">
+          <button class="filter-btn active">все</button>
+          <button class="filter-btn">японская</button>
+          <button class="filter-btn">французская</button>
+          <button class="filter-btn">русская</button>
+        </div>
+        <div class="menu-grid" data-aos="fade-up" data-aos-delay="400">
+          <div class="menu-item">
+            <div class="menu-img" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+            <h4>Суши Сёткус</h4>
+            <p>Свежий лосось, мидии, огурец</p>
+            <span class="price">1200₽</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-img" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+            <h4>Салат Оливье</h4>
+            <p>Крутон, яйцо, зелёный горошек</p>
+            <span class="price">800₽</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-img" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+            <h4>Утка по-пекински</h4>
+            <p>Тонкие лепёшки, соус, огурцы</span class="price">3500₽</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="reservations" class="section" data-aos="fade-up">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Мои бронирования</h2>
+        <div class="reservation-card" data-aos="fade-up">
+          <div class="res-info">
+            <strong>Sushi Bar Izumo</strong><br>
+            <span>2026-05-15, 19:00 • 4 чел.</span>
+          </div>
+          <button class="btn btn-sm">Отменить</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 GastroMap — Apple design + Linear style</p>
+    </div>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- AOS Animation -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
