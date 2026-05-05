@@ -1,82 +1,202 @@
 {
   "restaurants": [
     {
-      "id": "altus",
-      "name": {"sk": "Altus", "en": "Altus", "ru": "Альтус"},
-      "address": {"sk": "Pribeň 10, Bratislava", "en": "Pribeň 10, Bratislava", "ru": "Pribeň 10, Братислава"},
-      "coords": {"lat": 48.1480, "lng": 17.1067},
-      "website": "https://altus.sk",
-      "phone": "+421 911 111 111",
-      "color": "#1a1a2e",
-      "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
-      "description": {
-        "sk": "Premium sushi bar s moderným interiérom a skvelým výhľadom na mesto.",
-        "en": "Premium sushi bar with modern interior and great city views.",
-        "ru": "Премиум суши-бар с современным интерьером и прекрасным видом на город."
-      }
+      "id": "papaya",
+      "name": "Papaya",
+      "cuisine": "asian",
+      "lat": 48.1503375,
+      "lon": 17.111095,
+      "address": "Bratislava",
+      "hours": "Mo-Sa 10:00-20:00",
+      "website": "https://www.papayavn.eu/",
+      "distance": 317,
+      "vegetarian": true,
+      "wifi": true,
+      "takeaway": true
     },
     {
-      "id": "kastav",
-      "name": {"sk": "Kastav", "en": "Kastav", "ru": "Кастав"},
-      "address": {"sk": "Hviezdoslavova 12, Bratislava", "en": "Hviezdoslavova 12, Bratislava", "ru": "Hviezdoslavova 12, Братислава"},
-      "coords": {"lat": 48.1475, "lng": 17.1114},
-      "website": "https://kastav.sk",
-      "phone": "+421 908 123 456",
-      "color": "#e6b080",
-      "image": "https://images.unsplash.com/photo-1559396852-46991b05c330?w=800&q=80",
-      "description": {
-        "sk": "Tradičná slovenská kuchyňa s moderným výkladom.",
-        "en": "Traditional Slovak cuisine with a modern twist.",
-        "ru": "Традиционная словацкая кухня с современным подходом."
-      }
+      "id": "slovenska-krcma",
+      "name": "1. Slovenská krčma",
+      "cuisine": "slovak",
+      "lat": 48.1483346,
+      "lon": 17.1124098,
+      "address": "Obchodná 62, Bratislava",
+      "hours": "Mo-Fr 11:00-22:00; Sa-Su 12:00-22:00",
+      "phone": "+421 2 52926367",
+      "website": "https://www.slovakpub.sk/",
+      "distance": 351,
+      "capacity": 500,
+      "outdoor": true,
+      "wifi": true
     },
     {
-      "id": "dva_aly",
-      "name": {"sk": "Dva Alý", "en": "Dva Alý", "ru": "Два Али"},
-      "address": {"sk": "Svetozárna 4, Bratislava", "en": "Svetozárna 4, Bratislava", "ru": "Svetозárna 4, Братислава"},
-      "coords": {"lat": 48.1455, "lng": 17.1180},
-      "website": "https://dvaaly.sk",
-      "phone": "+421 910 222 333",
-      "color": "#d4af37",
-      "image": "https://images.unsplash.com/photo-1595037031676-855dd35464a2?w=800&q=80",
-      "description": {
-        "sk": "Elegantné miestnosť pre špeciality z mora.",
-        "en": "Elegant setting for seafood specialties.",
-        "ru": "Элегантная обстановка для морских деликатесов."
-      }
+      "id": "prasna-basta",
+      "name": "Prašná Bašta",
+      "cuisine": "international",
+      "lat": 48.1454432,
+      "lon": 17.1077678,
+      "address": "Bratislava",
+      "hours": "Mo-Su 11:00-23:00",
+      "distance": 351
     },
     {
-      "id": "la_banyka",
-      "name": {"sk": "La Bañka", "en": "La Bañka", "ru": "Ла Банка"},
-      "address": {"sk": "Lipská 8, Bratislava", "en": "Lipská 8, Bratislava", "ru": "Lipská 8, Братислава"},
-      "coords": {"lat": 48.1468, "lng": 17.1154},
-      "website": "https://labanka.sk",
-      "phone": "+421 915 444 555",
-      "color": "#8d6e63",
-      "image": "https://images.unsplash.com/photo-1556622333-858035c12133?w=800&q=80",
-      "description": {
-        "sk": "Rustikálna chalupa s autentickými pokrmami.",
-        "en": "Rustic cottage with authentic dishes.",
-        "ru": "Рустичный домик с аутентичными блюдами."
-      }
+      "id": "tusi",
+      "name": "TUSI",
+      "cuisine": "vietnamese",
+      "lat": 48.1500964,
+      "lon": 17.1173034,
+      "address": "Bratislava",
+      "hours": "Mo-We 10:30-21:00; Th-Fr 10:30-21:30; Sa 11:00-21:30",
+      "distance": 732
     },
     {
-      "id": "slavonia",
-      "name": {"sk": "Slávia", "en": "Slávia", "ru": "Славия"},
-      "address": {"sk": "Mierová 15, Bratislava", "en": "Mierová 15, Bratislava", "ru": "Mierová 15, Братислава"},
-      "coords": {"lat": 48.1490, "lng": 17.1085},
-      "website": "https://slavia.sk",
-      "phone": "+421 905 666 777",
-      "color": "#5d4037",
-      "image": "https://images.unsplash.com/photo-1511671727733-5aa2e2fc303c?w=800&q=80",
-      "description": {
-        "sk": "Klasická aristokratická reštaurácia s históriou.",
-        "en": "Classic aristocratic restaurant with history.",
-        "ru": "Классический аристократический ресторан с историей."
-      }
+      "id": "venturska",
+      "name": "Ventúrska klubovňa",
+      "cuisine": "international",
+      "lat": 48.1419957,
+      "lon": 17.1062778,
+      "address": "Ventúrska 1, Bratislava",
+      "hours": "Mo-Th,Su 11:00-24:00; Fr-Sa 11:00-01:00",
+      "website": "https://www.nasaklubovna.sk/sk/klubovne/",
+      "distance": 742,
+      "vegetarian": true,
+      "outdoor": true,
+      "bar": true,
+      "wheelchair": true
+    },
+    {
+      "id": "verne",
+      "name": "Verne",
+      "cuisine": "international",
+      "lat": 48.1418278,
+      "lon": 17.1076085,
+      "address": "Bratislava",
+      "hours": "Mo-Th 08:30-24:00; Fr 08:30-01:00; Sa 10:00-01:00; Su 11:00-24:00",
+      "phone": "+421 25 443 0514",
+      "distance": 753,
+      "outdoor": true
+    },
+    {
+      "id": "pivnice-kozla",
+      "name": "Pivnice u Kozla",
+      "cuisine": "slovak",
+      "lat": 48.1417971,
+      "lon": 17.1065478,
+      "address": "Panská 27, Bratislava",
+      "hours": "Mo-Su 11:00-24:00",
+      "phone": "+421 2 5443 4982",
+      "website": "http://www.pivniceukozla.sk/",
+      "distance": 761,
+      "wifi": true
+    },
+    {
+      "id": "dax",
+      "name": "DAX",
+      "cuisine": "italian",
+      "lat": 48.1552327,
+      "lon": 17.1118958,
+      "address": "Bratislava",
+      "hours": "Mo-Su 10:00-22:00",
+      "distance": 801,
+      "pizza": true
+    },
+    {
+      "id": "san-marten",
+      "name": "San Marten",
+      "cuisine": "international",
+      "lat": 48.1414893,
+      "lon": 17.1057079,
+      "address": "Panská 33, Bratislava",
+      "hours": "Mo-Th 11:30-24:00; Fr-Sa 11:30-03:00; Su 11:30-24:00",
+      "distance": 804,
+      "bar": true,
+      "outdoor": true
+    },
+    {
+      "id": "metropol",
+      "name": "Metropol",
+      "cuisine": "pizza",
+      "lat": 48.1562686,
+      "lon": 17.1132535,
+      "address": "Bratislava",
+      "hours": "Mo-Sa 09:00-22:00",
+      "phone": "+421 252491250",
+      "website": "https://www.pizzeriametropol.sk/",
+      "distance": 947,
+      "vegetarian": true,
+      "delivery": true,
+      "outdoor": true
+    },
+    {
+      "id": "galileo",
+      "name": "Galileo",
+      "cuisine": "international",
+      "lat": 48.154466,
+      "lon": 17.1184402,
+      "address": "Vazovova 7, Bratislava",
+      "hours": "Mo-Th 10:00-23:00; Fr 10:00-24:00; Sa 11:00-24:00; Su 11:00-23:00",
+      "distance": 1030,
+      "beer_garden": true
+    },
+    {
+      "id": "peppermint",
+      "name": "Peppermint",
+      "cuisine": "indian",
+      "lat": 48.1543094,
+      "lon": 17.1205527,
+      "address": "Bratislava",
+      "hours": "Mo-Su 11:00-21:00",
+      "phone": "+421 950 449 263",
+      "distance": 1146,
+      "vegan": true,
+      "vegetarian": true,
+      "outdoor": true
+    },
+    {
+      "id": "dilema",
+      "name": "Dilema",
+      "cuisine": "international",
+      "lat": 48.157056,
+      "lon": 17.1167487,
+      "address": "Bratislava",
+      "hours": "Mo-Fr 11:00-22:00",
+      "phone": "+421 911 940 999",
+      "website": "https://restaurant-dilema.sk/",
+      "distance": 1155,
+      "bar": true,
+      "outdoor": true,
+      "wifi": true
+    },
+    {
+      "id": "fellini",
+      "name": "Fellini",
+      "cuisine": "slovak",
+      "lat": 48.1538027,
+      "lon": 17.122032,
+      "address": "Vazovova 19, Bratislava",
+      "hours": "Mo-Fr 11:00-14:30",
+      "website": "http://www.restaurantfellini.sk",
+      "distance": 1210
+    },
+    {
+      "id": "da-andrea",
+      "name": "Da Andrea",
+      "cuisine": "italian",
+      "lat": 48.1548376,
+      "lon": 17.0912994,
+      "address": "Bratislava",
+      "hours": "Mo-Th 09:00-22:00; Fr-Sa 09:00-23:00; Su 09:00-22:00",
+      "phone": "+421 902 251 251",
+      "website": "https://daandrea.utaliana.sk/",
+      "distance": 1401,
+      "pizza": true,
+      "outdoor": true,
+      "wifi": true
     }
   ],
-  "city": "Bratislava",
-  "supported_languages": ["sk", "en", "ru"],
-  "default_language": "sk"
+  "center": {
+    "lat": 48.1486,
+    "lon": 17.1077,
+    "name": "Bratislava Old Town"
+  }
 }

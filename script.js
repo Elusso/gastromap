@@ -1,345 +1,326 @@
-// GastroMap — JS Logic
-document.addEventListener('DOMContentLoaded', () => {
-  // Language support
-  const translations = {
-    sk: {
-      nav_home: "Domov",
-      nav_map: "Mapa",
-      nav_reservations: "Rezervácie",
-      hero_title: "Откройте вкусы <br>Братиславы",
-      hero_subtitle: "Лучшие рестораны — в красивом интерфейсе",
-      search_placeholder: "Поиск по названию, кухне...",
-      search_button: "Найти",
-      popular_places: "Популярные места",
-      map_title: "Карта ресторанов",
-      reservations_title: "Мои бронирования",
-      res_restaurant: "Ресторан",
-      res_date: "Дата",
-      res_time: "Время",
-      res_people: "Человек",
-      cancel_button: "Отмена",
-      confirm_button: "Забронировать",
-      filter_all: "все",
-      filter_japanese: "японская",
-      filter_french: "французская",
-      filter_slovak: "словацкая",
-      filter_asian: "азиатская",
-      filter_european: "европейская",
-      restaurant_1: "1. Slovenská krčma",
-      restaurant_2: "TUSI",
-      restaurant_3: "Galileo",
-      restaurant_4: "DAX",
-      restaurant_5: "Fellini"
-    },
-    en: {
-      nav_home: "Home",
-      nav_map: "Map",
-      "nav_reservations": "Reservations",
-      hero_title: "Discover Flavors <br>of Bratislava",
-      hero_subtitle: "Best restaurants — in a beautiful interface",
-      search_placeholder: "Search by name, cuisine...",
-      search_button: "Find",
-      popular_places: "Popular Places",
-      map_title: "Restaurants Map",
-      reservations_title: "My Reservations",
-      res_restaurant: "Restaurant",
-      res_date: "Date",
-      res_time: "Time",
-      res_people: "People",
-      cancel_button: "Cancel",
-      confirm_button: "Book",
-      filter_all: "all",
-      filter_japanese: "japanese",
-      filter_french: "french",
-      filter_slovak: "slovak",
-      filter_asian: "asian",
-      filter_european: "european",
-      restaurant_1: "1. Slovenská krčma",
-      restaurant_2: "TUSI",
-      restaurant_3: "Galileo",
-      restaurant_4": "DAX",
-      restaurant_5: "Fellini"
-    },
-    ru: {
-      nav_home: "Главная",
-      nav_map: "Карта",
-      nav_reservations: "Бронирование",
-      hero_title: "Откройте вкусы <br>Братиславы",
-      hero_subtitle: "Лучшие рестораны — в красивом интерфейсе",
-      search_placeholder: "Поиск по названию, кухне...",
-      search_button: "Найти",
-      popular_places: "Популярные места",
-      map_title: "Карта ресторанов",
-      reservations_title: "Мои бронирования",
-      res_restaurant: "Ресторан",
-      res_date: "Дата",
-      res_time: "Время",
-      res_people: "Человек",
-      cancel_button: "Отмена",
-      confirm_button: "Забронировать",
-      filter_all: "все",
-      filter_japanese: "японская",
-      filter_french: "французская",
-      filter_slovak: "словацкая",
-      filter_asian: "азиатская",
-      filter_european: "европейская",
-      restaurant_1: "1. Slovenská krčma",
-      restaurant_2: "TUSI",
-      restaurant_3: "Galileo",
-      restaurant_4: "DAX",
-      restaurant_5: "Fellini"
-    }
-  };
-  
-  let currentLang = 'sk';
-  
-  // Set current language from HTML lang attribute
-  const htmlLang = document.documentElement.lang;
-  if (['sk', 'en', 'ru'].includes(htmlLang)) {
-    currentLang = htmlLang;
-  }
-  
-  // Translate function
-  const t = (key) => {
-    return translations[currentLang][key] || key;
-  };
-  
-  // Update all text elements
-  const translatePage = () => {
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      const text = t(key);
-      if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
-        el.placeholder = text;
-      } else {
-        el.innerHTML = text;
-      }
-    });
-    
-    // Update select options
-    const restaurantSelect = document.getElementById('res-restaurant');
-    if (restaurantSelect) {
-      restaurantSelect.innerHTML = `
-        <option>${t('restaurant_1')}</option>
-        <option>${t('restaurant_2')}</option>
-        <option>${t('restaurant_3')}</option>
-        <option>${t('restaurant_4')}</option>
-        <option>${t('restaurant_5')}</option>
-      `;
-    }
-  };
-  
-  // Language toggle
-  const langToggle = document.getElementById('lang-toggle');
-  if (langToggle) {
-    const langs = ['sk', 'en', 'ru'];
-    langToggle.addEventListener('click', () => {
-      currentLang = langs[(langs.indexOf(currentLang) + 1) % langs.length];
-      document.documentElement.lang = currentLang;
-      langToggle.textContent = currentLang;
-      translatePage();
-    });
-  }
-  
-  // Navigation
-  const navItems = document.querySelectorAll('.nav-item');
-  const sections = document.querySelectorAll('.section');
-  
-  navItems.forEach(item => {
-    item.addEventListener('click', () => {
-      navItems.forEach(nav => {
-        nav.classList.remove('active');
-        const sectionId = nav.getAttribute('data-section');
-        const section = document.getElementById(sectionId);
-        if (section) section.classList.remove('active');
-      });
-      
-      item.classList.add('active');
-      const targetSectionId = item.getAttribute('data-section');
-      const targetSection = document.getElementById(targetSectionId);
-      if (targetSection) {
-        targetSection.classList.add('active');
-        AOS.refresh();
-      }
-    });
-  });
-  
-  // Initialize AOS
-  AOS.init({
-    duration: 600,
-    once: true,
-    offset: 50,
-    easing: 'ease-out-cubic'
-  });
-  
-  // Filter buttons
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-  
-  // Reservation modal
-  const modal = document.getElementById('reservation-modal');
-  const closeModal = document.getElementById('close-modal');
-  const cancelReservation = document.getElementById('cancel-reservation');
-  const confirmReservation = document.getElementById('confirm-reservation');
-  
-  const openModal = () => {
-    modal.classList.add('active');
-  };
-  
-  const closeModalFunc = () => {
-    modal.classList.remove('active');
-  };
-  
-  // Initialize reservation button handlers
-  const initReservationButtons = () => {
-    document.querySelectorAll('.btn-outline').forEach(btn => {
-      btn.addEventListener('click', openModal);
-    });
-  };
-  
-  // Close modal handlers
-  closeModal.addEventListener('click', closeModalFunc);
-  cancelReservation.addEventListener('click', closeModalFunc);
-  
-  // Click outside modal to close
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModalFunc();
-  });
-  
-  // Confirm reservation
-  confirmReservation.addEventListener('click', () => {
-    const restaurant = document.getElementById('res-restaurant').value;
-    const date = document.getElementById('res-date').value;
-    const time = document.getElementById('res-time').value;
-    const people = document.getElementById('res-people').value;
-    
-    alert(`Бронирование подтверждено! 🎉\n\nРесторан: ${restaurant}\nДата: ${date}\nВремя: ${time}\nГостей: ${people}`);
-    closeModalFunc();
-  });
-  
-  // Leaflet Map
+// GastroMap - JavaScript Logic
+// Apple Design System Implementation
+
+let map;
+let markers = [];
+let restaurants = [];
+let translations = {};
+let currentLang = localStorage.getItem('gastromap-lang') || 'sk';
+
+// Initialize
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadData();
+  initAOS();
   initMap();
-  
-  // Initial translation
-  translatePage();
-  initReservationButtons();
-  
-  console.log('GastroMap loaded ✅');
+  renderRestaurants();
+  initLanguage();
+  initNavigation();
+  initSearch();
+  initBooking();
 });
 
-function initMap() {
-  const mapEl = document.getElementById('map');
-  if (!mapEl) return;
-  
-  // Bratislava coordinates
-  const mapCenter = [48.148, 17.1067];
-  const zoom = 14;
-  
-  const map = L.map(mapEl, {
-    center: mapCenter,
-    zoom: zoom,
-    zoomControl: false,
-    attributionControl: false
-  });
-  
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
-  }).addTo(map);
-  
-  // Bratislava restaurants markers
-  const restaurants = [
-    { 
-      name: "1. Slovenská krčma",
-      lat: 48.1483,
-      lng: 17.1124,
-      cuisine: "Словакская",
-      image: "https://images.unsplash.com/photo-1559396852-46991b05c330?w=800&q=80"
-    },
-    { 
-      name: "TUSI",
-      lat: 48.1501,
-      lng: 17.1173,
-      cuisine: "Вьетнамская",
-      image: "https://images.unsplash.com/photo-1595037031676-855dd35464a2?w=800&q=80"
-    },
-    { 
-      name: "Galileo",
-      lat: 48.1545,
-      lng: 17.1184,
-      cuisine: "Европейская",
-      image: "https://images.unsplash.com/photo-1556622333-858035c12133?w=800&q=80"
-    },
-    { 
-      name: "DAX",
-      lat: 48.1552,
-      lng: 17.1119,
-      cuisine: "Пицца",
-      image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae33?w=800&q=80"
-    },
-    { 
-      name: "Fellini",
-      lat: 48.1538,
-      lng: 17.1220,
-      cuisine: "Словакская",
-      image: "https://images.unsplash.com/photo-1511671727733-5aa2e2fc303c?w=800&q=80"
-    }
-  ];
-  
-  restaurants.forEach(r => {
-    const icon = L.divIcon({
-      html: `<div style="background: #e85d5d; color: white; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 12px;">${r.name}</div>`,
-      className: 'custom-marker-icon',
-      iconSize: [null, null]
-    });
-    
-    const marker = L.marker([r.lat, r.lng], { icon })
-      .addTo(map)
-      .bindPopup(`<div style="padding: 12px; background: white; border-radius: 8px;">
-        <strong>${r.name}</strong><br>
-        🍽️ ${r.cuisine}<br>
-        <a href="#home" style="color: #e85d5d; font-weight: 600; text-decoration: none;">Бронировать</a>
-      </div>`);
-    
-    marker.on('click', () => {
-      document.getElementById('res-restaurant').innerHTML = `<option selected>${r.name}</option>`;
-      openModal();
-    });
-  });
-  
-  // Add zoom control
-  L.control.zoom({ position: 'bottomright' }).addTo(map);
+// Load data
+async function loadData() {
+  try {
+    const [restaurantsRes, translationsRes] = await Promise.all([
+      fetch('data/restaurants.json'),
+      fetch('data/translations.json')
+    ]);
+    restaurants = await restaurantsRes.json();
+    translations = await translationsRes.json();
+  } catch (err) {
+    console.error('Error loading data:', err);
+  }
 }
 
-// Update card grid with restaurant data
-window.updateCards = function(restaurants) {
-  const cardGrid = document.getElementById('card-grid');
-  if (!cardGrid) return;
+// AOS
+function initAOS() {
+  AOS.init({
+    duration: 800,
+    once: true,
+    offset: 50
+  });
+}
+
+// Map
+function initMap() {
+  const center = restaurants.center || { lat: 48.1486, lon: 17.1077 };
   
-  cardGrid.innerHTML = restaurants.map(r => `
-    <article class="card" data-aos="fade-up">
-      <div class="card-image">
-        <img src="${r.image || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80'}" alt="${r.name}" loading="lazy">
-        <span class="card-badge">⭐ 4.8</span>
+  map = L.map('map', {
+    center: [center.lat, center.lon],
+    zoom: 14,
+    scrollWheelZoom: true
+  });
+  
+  // Dark style tiles
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap contributors © CARTO',
+    maxZoom: 19
+  }).addTo(map);
+  
+  // Add markers
+  restaurants.restaurants.forEach(r => {
+    const marker = L.marker([r.lat, r.lon], {
+      icon: L.divIcon({
+        className: 'map-marker',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32]
+      })
+    }).addTo(map);
+    
+    marker.bindPopup(`
+      <div style="min-width: 200px;">
+        <h3 style="font-weight: 600; margin-bottom: 4px;">${r.name}</h3>
+        <p style="color: #0071e3; font-size: 12px; margin-bottom: 8px;">${r.cuisine}</p>
+        <p style="font-size: 13px; color: #666;">${r.distance}m from center</p>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lon}" 
+           target="_blank"
+           style="display: inline-block; background: #0071e3; color: white; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 13px; margin-top: 8px;">
+          Directions
+        </a>
       </div>
-      <div class="card-content">
-        <h3 class="card-title">${r.name}</h3>
-        <p class="card-subtitle">${r.cuisine || 'Современная'}</p>
-        <div class="card-meta">
-          <span class="icon-label">📍</span>
-          <span class="meta-text">Братислава</span>
-          <span class="icon-label">💰</span>
-          <span class="meta-text">${r.price || '20-40 €'}</span>
-          <span class="icon-label">🍽️</span>
-          <span class="meta-text">${r.cuisine || 'Современная'}</span>
+    `);
+    
+    markers.push({ marker, restaurant: r });
+  });
+}
+
+// Render restaurants
+function renderRestaurants(filter = 'all', search = '') {
+  const grid = document.getElementById('restaurants-grid');
+  let filtered = restaurants.restaurants;
+  
+  // Filter by cuisine
+  if (filter !== 'all') {
+    filtered = filtered.filter(r => {
+      if (filter === 'slovak') return r.cuisine === 'slovak' || r.cuisine === 'regional';
+      if (filter === 'italian') return r.cuisine === 'italian' || r.cuisine === 'pizza';
+      if (filter === 'asian') return r.cuisine === 'asian' || r.cuisine === 'vietnamese' || r.cuisine === 'indian';
+      if (filter === 'international') return r.cuisine === 'international';
+      return true;
+    });
+  }
+  
+  // Search
+  if (search) {
+    const s = search.toLowerCase();
+    filtered = filtered.filter(r => 
+      r.name.toLowerCase().includes(s) || 
+      r.cuisine.toLowerCase().includes(s)
+    );
+  }
+  
+  grid.innerHTML = filtered.map(r => `
+    <div class="restaurant-card" data-aos="fade-up" data-id="${r.id}">
+      <div class="restaurant-image" style="background: linear-gradient(135deg, ${getCuisineColor(r.cuisine)}, ${getCuisineColor2(r.cuisine)});">
+        ${r.name.charAt(0)}
+      </div>
+      <div class="restaurant-content">
+        <h3 class="restaurant-name">${r.name}</h3>
+        <span class="restaurant-cuisine">${r.cuisine}</span>
+        <p class="restaurant-meta">
+          ${r.distance}m ${t('restaurant_distance')}<br>
+          ${r.hours ? t('restaurant_hours') + ': ' + formatHours(r.hours) : ''}
+        </p>
+        <div class="restaurant-features">
+          ${r.wifi ? '<span class="feature-badge">WiFi</span>' : ''}
+          ${r.outdoor ? '<span class="feature-badge">' + t('feature_outdoor') + '</span>' : ''}
+          ${r.vegetarian ? '<span class="feature-badge">' + t('feature_vegetarian') + '</span>' : ''}
+          ${r.vegan ? '<span class="feature-badge">' + t('feature_vegan') + '</span>' : ''}
+          ${r.delivery ? '<span class="feature-badge">' + t('feature_delivery') + '</span>' : ''}
         </div>
-        <button class="btn btn-outline" onclick="openModal()">Забронировать</button>
+        <div class="restaurant-actions">
+          <button class="btn-book" onclick="openBooking('${r.id}')">${t('restaurant_book')}</button>
+          <a class="btn-directions" href="https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lon}" target="_blank">
+            ${t('restaurant_directions')}
+          </a>
+        </div>
       </div>
-    </article>
+    </div>
   `).join('');
-};
+  
+  // Re-init AOS for new cards
+  AOS.refresh();
+}
+
+// Cuisine colors
+function getCuisineColor(cuisine) {
+  const colors = {
+    'slovak': '#e85d5d',
+    'regional': '#e85d5d',
+    'italian': '#ff9500',
+    'pizza': '#ff9500',
+    'asian': '#00c7be',
+    'vietnamese': '#00c7be',
+    'indian': '#ff6b35',
+    'international': '#667eea'
+  };
+  return colors[cuisine] || '#0071e3';
+}
+
+function getCuisineColor2(cuisine) {
+  const colors = {
+    'slovak': '#ff8787',
+    'regional': '#ff8787',
+    'italian': '#ffb84d',
+    'pizza': '#ffb84d',
+    'asian': '#4dd8d0',
+    'vietnamese': '#4dd8d0',
+    'indian': '#ff9a6c',
+    'international': '#8b9eff'
+  };
+  return colors[cuisine] || '#4da3ff';
+}
+
+// Format hours
+function formatHours(hours) {
+  if (!hours) return '';
+  return hours.split(';')[0]; // Show first part
+}
+
+// Translation helper
+function t(key) {
+  return translations[currentLang]?.[key] || key;
+}
+
+// Language
+function initLanguage() {
+  setLanguage(currentLang);
+  
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setLanguage(btn.dataset.lang);
+    });
+  });
+}
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('gastromap-lang', lang);
+  
+  // Update active button
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  
+  // Update all translatable elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (translations[lang]?.[key]) {
+      el.textContent = translations[lang][key];
+    }
+  });
+  
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (translations[lang]?.[key]) {
+      el.placeholder = translations[lang][key];
+    }
+  });
+  
+  // Re-render restaurants with new language
+  renderRestaurants();
+  
+  // Update page title
+  if (translations[lang]?.seo_title) {
+    document.title = translations[lang].seo_title;
+  }
+}
+
+// Navigation
+function initNavigation() {
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+      
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+}
+
+// Search & Filter
+function initSearch() {
+  const searchInput = document.querySelector('.search-input');
+  const searchBtn = document.querySelector('.search-btn');
+  const chips = document.querySelectorAll('.chip');
+  
+  let currentFilter = 'all';
+  
+  const doSearch = () => {
+    const query = searchInput.value.trim();
+    renderRestaurants(currentFilter, query);
+  };
+  
+  searchInput?.addEventListener('input', debounce(doSearch, 300));
+  searchBtn?.addEventListener('click', doSearch);
+  
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentFilter = chip.dataset.filter;
+      doSearch();
+    });
+  });
+}
+
+// Booking
+function initBooking() {
+  const modal = document.getElementById('booking-modal');
+  const form = document.getElementById('booking-form');
+  const closeBtn = modal?.querySelector('.modal-close');
+  const cancelBtn = modal?.querySelector('.btn-secondary');
+  
+  closeBtn?.addEventListener('click', closeBooking);
+  cancelBtn?.addEventListener('click', closeBooking);
+  
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeBooking();
+  });
+  
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    console.log('Booking submitted:', Object.fromEntries(formData));
+    
+    alert(t('success_booking'));
+    closeBooking();
+    form.reset();
+  });
+}
+
+function openBooking(restaurantId) {
+  const restaurant = restaurants.restaurants.find(r => r.id === restaurantId);
+  const modal = document.getElementById('booking-modal');
+  const nameEl = document.getElementById('modal-restaurant-name');
+  
+  if (restaurant && nameEl) {
+    nameEl.textContent = restaurant.name;
+  }
+  
+  modal?.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBooking() {
+  const modal = document.getElementById('booking-modal');
+  modal?.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Debounce
+function debounce(fn, ms) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn.apply(this, args), ms);
+  };
+}
+
+// Global
+window.openBooking = openBooking;
