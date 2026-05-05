@@ -2,160 +2,182 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GastroMap Bratislava – Najlepšie reštaurácie v centre</title>
-  <meta name="description" content="Objavte najlepšie reštaurácie v Bratislave s GastroMap. Slovenská, talianska, ázijská a medzinárodná kuchyňa s rezerváciou online.">
-  <meta name="keywords" content="reštaurácie Bratislava, gastronómia, jedlo, rezervácia">
-  
-  <!-- Fonts: SF Pro via system-ui stack -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="style.css">
-  
-  <!-- Favicon -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>GastroMap — Najlepšie reštaurácie v Bratislave</title>
+  <meta name="description" content="Objavte najlepšie reštaurácie v centre Bratislavy. Mapa, menu, rezervácie, akcie.">
+  <meta name="theme-color" content="#C17B4E">
   <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@11/swiper-bundle.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Glass Navigation -->
-  <nav class="nav-glass" data-aos="fade-down">
-    <div class="nav-content">
-      <a href="#" class="nav-logo">
-        <img src="images/logo.png" alt="GastroMap" class="logo-img">
-        <span class="logo-text">GastroMap</span>
-      </a>
-      
-      <div class="nav-links">
-        <a href="#home" class="nav-link active" data-i18n="nav_home">Domov</a>
-        <a href="#map-section" class="nav-link" data-i18n="nav_map">Mapa</a>
-        <a href="#restaurants" class="nav-link" data-i18n="nav_favorites">Obľúbené</a>
-        <a href="#" class="nav-link" data-i18n="nav_bookings">Rezervácie</a>
+  <div id="app">
+
+    <!-- HEADER -->
+    <header class="header">
+      <img src="images/logo.png" alt="GastroMap" class="logo-img" onerror="this.style.display='none'">
+      <h1 class="brand">GastroMap</h1>
+      <div class="lang-switch">
+        <button data-lang="sk" class="lang-btn active">SK</button>
+        <button data-lang="en" class="lang-btn">EN</button>
+        <button data-lang="ru" class="lang-btn">RU</button>
       </div>
-      
-      <div class="nav-actions">
-        <div class="lang-toggle">
-          <button class="lang-btn active" data-lang="sk">SK</button>
-          <button class="lang-btn" data-lang="en">EN</button>
-          <button class="lang-btn" data-lang="ru">RU</button>
+    </header>
+
+    <!-- EXPLORE TAB -->
+    <section id="explore-tab" class="tab-content-page active">
+      <div class="view-toggle">
+        <button id="map-btn" class="view-btn active">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/></svg>
+          <span data-i18n="explore.map_view">Mapa</span>
+        </button>
+        <button id="list-btn" class="view-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <span data-i18n="explore.list_view">Zoznam</span>
+        </button>
+      </div>
+
+      <!-- MAP -->
+      <div id="map-container" class="map-container">
+        <div id="map"></div>
+        <div id="bottom-sheet" class="bottom-sheet">
+          <div class="sheet-handle"></div>
+          <div id="sheet-content"></div>
         </div>
       </div>
-      
-      <button class="nav-mobile-toggle" aria-label="Menu">
-        <span></span><span></span><span></span>
+
+      <!-- LIST -->
+      <div id="list-container" class="list-container hidden">
+        <div class="cuisine-filter" id="cuisine-filter"></div>
+        <div id="restaurant-list" class="restaurant-list"></div>
+      </div>
+    </section>
+
+    <!-- PROMOTIONS TAB -->
+    <section id="promotions-tab" class="tab-content-page hidden">
+      <h2 class="page-title" data-i18n="promotions.title">Akcie a Ponuky</h2>
+      <div id="promo-list" class="promo-grid"></div>
+    </section>
+
+    <!-- NEWS TAB -->
+    <section id="news-tab" class="tab-content-page hidden">
+      <h2 class="page-title" data-i18n="news.title">Novinky</h2>
+      <div id="news-list" class="news-grid"></div>
+    </section>
+
+    <!-- PROFILE TAB -->
+    <section id="profile-tab" class="tab-content-page hidden">
+      <div class="profile-header">
+        <div class="avatar-circle">👤</div>
+        <h2 class="profile-name">Ivan Horváth</h2>
+        <p class="profile-points">⭐ <strong>1 250</strong> bodov</p>
+      </div>
+      <div id="profile-sections" class="profile-sections"></div>
+    </section>
+
+    <!-- RESTAURANT DETAIL (fullscreen overlay) -->
+    <section id="detail-overlay" class="detail-overlay hidden">
+      <button class="detail-back" onclick="closeDetail()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-    </div>
-  </nav>
 
-  <!-- Hero Section -->
-  <section id="home" class="hero-section">
-    <div class="hero-content" data-aos="fade-up" data-aos-delay="100">
-      <h1 class="hero-title" data-i18n="hero_title">GastroMap</h1>
-      <p class="hero-subtitle" data-i18n="hero_subtitle">Objavte najlepšie reštaurácie v Bratislave</p>
-      <a href="#map-section" class="hero-cta" data-i18n="hero_cta">Preskúvať</a>
-    </div>
-    <div class="hero-scroll">
-      <div class="scroll-indicator"></div>
-    </div>
-  </section>
-
-  <!-- Search & Filter -->
-  <section class="search-section" id="search-section">
-    <div class="search-container" data-aos="fade-up">
-      <div class="search-bar">
-        <input type="text" class="search-input" data-i18n-placeholder="search_placeholder" placeholder="Hľadať reštauráciu...">
-        <button class="search-btn" data-i18n="search_button">Hľadať</button>
+      <!-- Photo carousel -->
+      <div class="detail-carousel swiper" id="detail-carousel">
+        <div class="swiper-wrapper" id="carousel-slides"></div>
+        <div class="swiper-pagination"></div>
       </div>
-      
-      <div class="filter-chips">
-        <button class="chip active" data-filter="all" data-i18n="filter_all">Všetko</button>
-        <button class="chip" data-filter="slovak" data-i18n="filter_slovak">Slovenská</button>
-        <button class="chip" data-filter="italian" data-i18n="filter_italian">Talianska</button>
-        <button class="chip" data-filter="asian" data-i18n="filter_asian">Ázijská</button>
-        <button class="chip" data-filter="international" data-i18n="filter_international">Medzinárodná</button>
+
+      <!-- Restaurant info -->
+      <div class="detail-info">
+        <h1 id="detail-name"></h1>
+        <div class="detail-cuisine-tags" id="detail-cuisine-tags"></div>
+        <div class="detail-address-row">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/></svg>
+          <span id="detail-address"></span>
+        </div>
+        <div class="detail-rating">
+          <span id="detail-stars" class="stars-text"></span>
+          <span id="detail-rating-value" class="rating-num"></span>
+          <span id="detail-reviews-count" class="reviews-count"></span>
+        </div>
       </div>
-    </div>
-  </section>
 
-  <!-- Map Section -->
-  <section id="map-section" class="map-section">
-    <div class="map-container" data-aos="zoom-in" data-aos-delay="200">
-      <div id="map" class="leaflet-map"></div>
-    </div>
-  </section>
-
-  <!-- Restaurants Grid -->
-  <section id="restaurants" class="restaurants-section">
-    <div class="restaurants-container">
-      <h2 class="section-title" data-aos="fade-up">Reštaurácie</h2>
-      <div class="restaurants-grid" id="restaurants-grid">
-        <!-- Populated by JS -->
+      <!-- 4 Tabs -->
+      <div class="detail-tabs">
+        <button class="dtab active" data-dtab="description">
+          <span>📋</span> <span data-i18n="restaurant.description">Popis</span>
+        </button>
+        <button class="dtab" data-dtab="menu">
+          <span>🍽️</span> <span data-i18n="restaurant.menu">Menu</span>
+        </button>
+        <button class="dtab" data-dtab="reservation">
+          <span>📅</span> <span data-i18n="restaurant.reservation">Rezervácia</span>
+        </button>
+        <button class="dtab" data-dtab="reviews">
+          <span>💬</span> <span data-i18n="restaurant.reviews">Recenzie</span>
+        </button>
       </div>
-    </div>
-  </section>
 
-  <!-- Booking Modal -->
-  <div class="modal-overlay" id="booking-modal">
-    <div class="modal-content" data-aos="zoom-in">
-      <button class="modal-close">&times;</button>
-      <h2 class="modal-title" data-i18n="booking_title">Rezervácia</h2>
-      <p class="modal-restaurant" id="modal-restaurant-name"></p>
-      
-      <form class="booking-form" id="booking-form">
-        <div class="form-group">
-          <label data-i18n="booking_name">Meno</label>
-          <input type="text" name="name" required>
-        </div>
-        <div class="form-group">
-          <label data-i18n="booking_email">E-mail</label>
-          <input type="email" name="email" required>
-        </div>
-        <div class="form-group">
-          <label data-i18n="booking_phone">Telefón</label>
-          <input type="tel" name="phone" required>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label data-i18n="booking_date">Dátum</label>
-            <input type="date" name="date" required>
-          </div>
-          <div class="form-group">
-            <label data-i18n="booking_time">Čas</label>
-            <input type="time" name="time" required>
+      <!-- Tab content -->
+      <div class="detail-tab-content">
+        <div id="dtab-description" class="dtab-panel active"></div>
+        <div id="dtab-menu" class="dtab-panel hidden"></div>
+        <div id="dtab-reservation" class="dtab-panel hidden">
+          <div class="res-form">
+            <div class="res-field">
+              <label data-i18n="reservation.date">Dátum</label>
+              <input type="date" id="res-date" class="res-input">
+            </div>
+            <div class="res-field">
+              <label data-i18n="reservation.time">Čas</label>
+              <select id="res-time" class="res-input"></select>
+            </div>
+            <div class="res-field">
+              <label data-i18n="reservation.guests">Počet hostí</label>
+              <select id="res-guests" class="res-input">
+                <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+              </select>
+            </div>
+            <button class="btn-book-now" onclick="submitBooking()">
+              <span data-i18n="reservation.confirm">Potvrdiť rezerváciu</span>
+            </button>
           </div>
         </div>
-        <div class="form-group">
-          <label data-i18n="booking_guests">Počet osôb</label>
-          <select name="guests" required>
-            <option value="1">1</option>
-            <option value="2" selected>2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6+">6+</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label data-i18n="booking_notes">Poznámky</label>
-          <textarea name="notes" rows="3"></textarea>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn-secondary" data-i18n="booking_cancel">Zrušiť</button>
-          <button type="submit" class="btn-primary" data-i18n="booking_submit">Potvrdiť</button>
-        </div>
-      </form>
+        <div id="dtab-reviews" class="dtab-panel hidden"></div>
+      </div>
+    </section>
+
+    <!-- BOOKING SUCCESS TOAST -->
+    <div id="toast" class="toast hidden">
+      <span id="toast-msg"></span>
     </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-tab="explore">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/></svg>
+        <span data-i18n="nav.explore">Objavovať</span>
+      </button>
+      <button class="nav-item" data-tab="promotions">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span data-i18n="nav.promotions">Akcie</span>
+      </button>
+      <button class="nav-item" data-tab="news">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="6" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="6" y1="16" x2="12" y2="16"/></svg>
+        <span data-i18n="nav.news">Novinky</span>
+      </button>
+      <button class="nav-item" data-tab="profile">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>
+        <span data-i18n="nav.profile">Profil</span>
+      </button>
+    </nav>
   </div>
 
-  <!-- Footer -->
-  <footer class="footer-section">
-    <div class="footer-content">
-      <img src="images/logo.png" alt="GastroMap" class="footer-logo">
-      <p class="footer-text">© 2026 GastroMap. <span data-i18n="footer_rights">Všetky práva vyhradené</span>.</p>
-    </div>
-  </footer>
-
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

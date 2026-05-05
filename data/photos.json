@@ -1,0 +1,36 @@
+{
+  "photos": {
+    "papaya": [
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad0f22?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1414235077428-338989a2e8fd?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&h=500&fit=crop&crop=center"
+    ],
+    "slovenska-krcma": [
+      "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1567521464027-f127ff144326?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&h=500&fit=crop&crop=center"
+    ],
+    "tusi": [
+      "https://images.unsplash.com/photo-1582878826629-29b7ad1f43e2?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1562565652-a0d8f0c59eb3?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1546549032-9571fd6499e3?w=800&h=500&fit=crop&crop=center"
+    ],
+    "dax": [
+      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1495474477109-de6e9e1c69a5?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&h=500&fit=crop&crop=center"
+    ],
+    "galileo": [
+      "https://images.unsplash.com/photo-1595809003300-921a41a7c825?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1567620905732-2d1ec765f61c?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=800&h=500&fit=crop&crop=center"
+    ],
+    "fellini": [
+      "https://images.unsplash.com/photo-1565558825493-5a151d60f05d?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1579631542720-3a87824fff85?w=800&h=500&fit=crop&crop=center",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=500&fit=crop&crop=center"
+    ]
+  }
+}
