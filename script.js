@@ -44,7 +44,14 @@ async function loadData() {
 }
 
 function t(key) {
-  return APP.translations[APP.lang]?.[key] || key;
+  // Support nested keys like 'nav.explore'
+  const parts = key.split('.');
+  let val = APP.translations[APP.lang];
+  for (const p of parts) {
+    if (val == null) break;
+    val = val[p];
+  }
+  return val ?? key;
 }
 
 function tnested(obj, key) {
@@ -165,10 +172,10 @@ function renderRestaurantList() {
   cont.innerHTML = APP.restaurants.map(r => {
     const name = tnested(r, 'name');
     const cuisine = (Array.isArray(r.cuisine) ? r.cuisine.join(', ') : r.cuisine) || '';
-    const photo = (APP.photos[r.id] && APP.photos[r.id][0]) || '';
+      const photo = (APP.photos[r.id] && APP.photos[r.id][0]) ? APP.photos[r.id][0].replace(/[?&]w=\d+(&h=\d+)?(&fit=crop)?(&crop=center)?/g, '') + '&w=180&h=180&fit=crop&crop=center' : '';
     return `
       <div class="resto-card fade-up" data-id="${r.id}">
-        ${photo ? `<img src="${photo}&w=180&h=180&fit=crop" class="resto-card-img" alt="${name}" loading="lazy" onerror="this.style.display='none'">` : `<div class="resto-card-img" style="background:linear-gradient(135deg,var(--accent),#D9956B);display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:700">${name.charAt(0)}</div>`}
+        ${photo ? `<img src="${photo}" class="resto-card-img" alt="${name}" loading="lazy" onerror="this.style.display='none'">` : `<div class="resto-card-img" style="background:linear-gradient(135deg,var(--accent),#D9956B);display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:700">${name.charAt(0)}</div>`}
         <div class="resto-card-body">
           <div class="resto-card-name">${name}</div>
           <div class="resto-card-cuisine">${cuisine}</div>

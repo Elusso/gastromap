@@ -17,8 +17,10 @@
 
     <!-- HEADER -->
     <header class="header">
-      <img src="images/logo.png" alt="GastroMap" class="logo-img" onerror="this.style.display='none'">
-      <h1 class="brand">GastroMap</h1>
+      <div class="header-inner">
+        <img src="images/logo.png" alt="GastroMap" class="logo-img" onerror="this.style.display='none'">
+        <h1 class="brand">GastroMap</h1>
+      </div>
       <div class="lang-switch">
         <button data-lang="sk" class="lang-btn active">SK</button>
         <button data-lang="en" class="lang-btn">EN</button>
@@ -64,7 +66,28 @@
     <!-- NEWS TAB -->
     <section id="news-tab" class="tab-content-page hidden">
       <h2 class="page-title" data-i18n="news.title">Novinky</h2>
-      <div id="news-list" class="news-grid"></div>
+      <div id="news-list" class="news-grid">
+        <div class="news-card" data-aos="fade-up">
+          <div class="news-date">2026-05-04</div>
+          <div class="news-title">🍕 Nové letné menu v Papaya — zľava 15% na Pho Bo</div>
+          <div class="news-text">Reštaurácia Papaya Asian Bistro prináša letné menu s čerstvými ázijskými špecialitami. Zľava 15% platí do konca mája pri rezervácii cez GastroMap.</div>
+        </div>
+        <div class="news-card" data-aos="fade-up">
+          <div class="news-date">2026-05-02</div>
+          <div class="news-title">🥇 DAX získal cenu „Najlepšie raňajky v Bratislave 2026"</div>
+          <div class="news-text">Kaviareň a reštaurácia DAX na Hviezdoslavovom námestí vyhrala prestížnu gastro cenu za najlepšie raňajkové menu. Eggs Benedict a avokádový toast sú top!</div>
+        </div>
+        <div class="news-card" data-aos="fade-up">
+          <div class="news-date">2026-04-28</div>
+          <div class="news-text">🌿 TUSI Vietnamese spúšťa vegánske letné rolky — čerstvé suroviny, bez mäsa, plné chuti. Dostupné denne od 11:00 na Obchodnej 38.</div>
+          <div class="news-title">🌿 TUSI spúšťa vegánske jarné rolky</div>
+        </div>
+        <div class="news-card" data-aos="fade-up">
+          <div class="news-date">2026-04-25</div>
+          <div class="news-title">🍷 Galileo: Večer talianskeho vína — 28. mája</div>
+          <div class="news-text">Reštaurácia Galileo pozýva na špeciálny večer talianskeho vína. Degustácia 5 vín, domáca pasta a živá hudba. Rezervácia už otvorená!</div>
+        </div>
+      </div>
     </section>
 
     <!-- PROFILE TAB -->
