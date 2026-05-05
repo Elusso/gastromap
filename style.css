@@ -1,0 +1,71 @@
+/* Warm Apple Design System */
+:root {
+  --brand-bg: #f7f5f2;
+  --brand-card: #ffffff;
+  --brand-text: #1c1c1e;
+  --brand-secondary: #424245;
+  --brand-tertiary: #8e8e93;
+  --brand-accent: #e85d5d;
+  --brand-gold: #d4af37;
+  --brand-green: #4caf50;
+  --brand-gradient: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+  --brand-gradient-violet: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+  --shadow-card: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+  --radius-standard: 12px;
+  --radius-card: 20px;
+  --radius-panel: 24px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--brand-bg);
+  color: var(--brand-text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Leaflet Customization */
+.leaflet-container {
+  background: white;
+}
+
+.leaflet-popup-content-wrapper {
+  background: white;
+  border-radius: 8px;
+  padding: 0;
+}
+
+.leaflet-popup-tip {
+  background: white;
+}
+
+.leaflet-popup-close-button {
+  color: var(--brand-accent);
+}
+
+.custom-marker-icon {
+  cursor: pointer;
+}
+
+/* Card Badge Override */
+.card-badge {
+  background: rgba(232,93,93,0.8);
+  color: white;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
