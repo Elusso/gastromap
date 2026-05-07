@@ -44,16 +44,16 @@ function initNavigation() {
   document.getElementById('map-btn').addEventListener('click', function() {
     this.classList.add('active');
     document.getElementById('list-btn').classList.remove('active');
-    document.getElementById('map-container').classList.remove('hidden');
-    document.getElementById('list-container').classList.add('hidden');
+    document.getElementById('map-container').style.setProperty('display', 'block', 'important');
+    document.getElementById('list-container').style.setProperty('display', 'none', 'important');
     setTimeout(() => { if (map) map.invalidateSize(); }, 100);
   });
 
   document.getElementById('list-btn').addEventListener('click', function() {
     this.classList.add('active');
     document.getElementById('map-btn').classList.remove('active');
-    document.getElementById('list-container').classList.remove('hidden');
-    document.getElementById('map-container').classList.add('hidden');
+    document.getElementById('list-container').style.setProperty('display', 'block', 'important');
+    document.getElementById('map-container').style.setProperty('display', 'none', 'important');
   });
 }
 
