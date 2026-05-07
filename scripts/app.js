@@ -108,6 +108,15 @@ function renderRestaurants() {
 
 function initMap() {
   if (window.map) window.map.remove();
+  
+  // Only init if map container is visible
+  const mapDiv = document.getElementById('map');
+  if (!mapDiv || mapDiv.offsetParent === null) {
+    // Retry after a short delay
+    setTimeout(initMap, 500);
+    return;
+  }
+
   const map = L.map('map').setView([48.1486, 17.1077], 14);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
