@@ -154,6 +154,10 @@ body {
   display: none;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .custom-marker {
   background: transparent;
   border: none;
