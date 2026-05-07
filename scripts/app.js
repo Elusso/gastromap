@@ -1,8 +1,9 @@
-// GastroMap Final App Logic
+// GastroMap Final - Working Version
 let currentLang = 'sk';
 let restaurants = [];
 let photos = {};
 let translations = {};
+let map = null;
 
 document.addEventListener('DOMContentLoaded', initApp);
 
@@ -15,18 +16,15 @@ function initApp() {
     return fetch('data/translations.json');
   }).then(r => r.json()).then(data => {
     translations = data;
-    initAll();
+    initNavigation();
+    initLanguage();
+    renderRestaurants();
+    renderDeals();
+    renderNews();
+    renderProfile();
+    // Init map after short delay
+    setTimeout(initMap, 300);
   }).catch(err => console.error('Load error:', err));
-}
-
-function initAll() {
-  initNavigation();
-  initLanguage();
-  renderRestaurants();
-  initMap();
-  renderDeals();
-  renderNews();
-  renderProfile();
 }
 
 function initNavigation() {
@@ -46,15 +44,16 @@ function initNavigation() {
   document.getElementById('map-btn').addEventListener('click', function() {
     this.classList.add('active');
     document.getElementById('list-btn').classList.remove('active');
-    document.getElementById('map-container').classList.add('active');
-    document.getElementById('list-container').classList.remove('active');
+    document.getElementById('map-container').style.display = 'block';
+    document.getElementById('list-container').style.display = 'none';
+    setTimeout(() => { if (map) map.invalidateSize(); }, 100);
   });
 
   document.getElementById('list-btn').addEventListener('click', function() {
     this.classList.add('active');
     document.getElementById('map-btn').classList.remove('active');
-    document.getElementById('list-container').classList.add('active');
-    document.getElementById('map-container').classList.remove('active');
+    document.getElementById('list-container').style.display = 'block';
+    document.getElementById('map-container').style.display = 'none';
   });
 }
 
@@ -85,8 +84,9 @@ function renderRestaurants() {
   const list = document.getElementById('restaurant-list');
   if (!list) return;
   list.innerHTML = '';
+  const langSuffix = currentLang === 'en' ? '_en' : currentLang === 'ru' ? '_ru' : '';
+  
   restaurants.forEach(r => {
-    const langSuffix = currentLang === 'en' ? '_en' : currentLang === 'ru' ? '_ru' : '';
     const name = r['name' + langSuffix] || r.name;
     const desc = (r['description' + langSuffix] || r.description_en).substring(0, 60) + '...';
     const rPhotos = photos[r.id] || [];
@@ -107,17 +107,11 @@ function renderRestaurants() {
 }
 
 function initMap() {
-  if (window.map) window.map.remove();
-  
-  // Only init if map container is visible
   const mapDiv = document.getElementById('map');
-  if (!mapDiv || mapDiv.offsetParent === null) {
-    // Retry after a short delay
-    setTimeout(initMap, 500);
-    return;
-  }
-
-  const map = L.map('map').setView([48.1486, 17.1077], 14);
+  if (!mapDiv) { console.error('Map div not found'); return; }
+  if (map) map.remove();
+  
+  map = L.map('map').setView([48.1486, 17.1077], 14);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
     maxZoom: 18
@@ -173,12 +167,11 @@ function closeDetail() {
 function renderDeals() {
   const container = document.getElementById('promo-list');
   if (!container) return;
-  const deals = [
+  container.innerHTML = [
     { title: 'Káva 1+1', desc: 'Kúpte si jednu kávu a druhú máte zdarma', icon: '☕' },
     { title: 'Obedné menu 20%', desc: 'Iba v pracovné dni 11:00-15:00', icon: '🍲' },
     { title: 'Happy Hour 18-20', desc: 'Všetky nápoje 2+1 zdarma', icon: '🍺' }
-  ];
-  container.innerHTML = deals.map(d => `
+  ].map(d => `
     <div class="offer-card">
       <div class="offer-image" style="display:flex;align-items:center;justify-content:center;font-size:40px;">${d.icon}</div>
       <div class="offer-content">
