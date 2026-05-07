@@ -1,9 +1,10 @@
-// GastroMap Final - Working Version
+// GastroMap Final - Fixed Version
 let currentLang = 'sk';
 let restaurants = [];
 let photos = {};
 let translations = {};
 let map = null;
+let mapInitialized = false;
 
 document.addEventListener('DOMContentLoaded', initApp);
 
@@ -19,11 +20,10 @@ function initApp() {
     initNavigation();
     initLanguage();
     renderRestaurants();
+    // Рендерим контент всех вкладок
     renderDeals();
     renderNews();
     renderProfile();
-    // Init map after short delay
-    setTimeout(initMap, 300);
   }).catch(err => console.error('Load error:', err));
 }
 
@@ -33,28 +33,50 @@ function initNavigation() {
   
   navItems.forEach(item => {
     item.addEventListener('click', function() {
-      navItems.forEach(n => n.classList.remove('active'));
-      this.classList.add('active');
-      tabs.forEach(t => t.classList.remove('active'));
       const tabId = this.dataset.tab + '-tab';
-      document.getElementById(tabId).classList.add('active');
+      // Убираем active у всех nav-item
+      navItems.forEach(n => n.classList.remove('active'));
+      // Добавляем active текущему
+      this.classList.add('active');
+      // Скрываем все tab-page
+      tabs.forEach(t => { 
+        t.classList.remove('active'); 
+        t.style.display = 'none';
+      });
+      // Показываем нужный tab-page
+      const targetTab = document.getElementById(tabId);
+      if (targetTab) {
+        targetTab.classList.add('active');
+        targetTab.style.display = 'block';
+      }
+      
+      // Если переключились на вкладку карты, инициализируем карту с задержкой
     });
   });
 
-  document.getElementById('map-btn').addEventListener('click', function() {
-    this.classList.add('active');
-    document.getElementById('list-btn').classList.remove('active');
-    document.getElementById('map-container').style.setProperty('display', 'block', 'important');
-    document.getElementById('list-container').style.setProperty('display', 'none', 'important');
-    setTimeout(() => { if (map) map.invalidateSize(); }, 100);
-  });
+  // Логика кнопок Map / List внутри вкладки map
+  const mapBtn = document.getElementById('map-btn');
+  const listBtn = document.getElementById('list-btn');
+  const mapContainer = document.getElementById('map-container');
+  const listContainer = document.getElementById('list-container');
 
-  document.getElementById('list-btn').addEventListener('click', function() {
-    this.classList.add('active');
-    document.getElementById('map-btn').classList.remove('active');
-    document.getElementById('list-container').style.setProperty('display', 'block', 'important');
-    document.getElementById('map-container').style.setProperty('display', 'none', 'important');
-  });
+  if (mapBtn && listBtn && mapContainer && listContainer) {
+    mapBtn.addEventListener('click', function() {
+      mapBtn.classList.add('active');
+      listBtn.classList.remove('active');
+      mapContainer.style.display = 'block';
+      listContainer.style.display = 'none';
+      // Инициализируем карту если нужно
+      setTimeout(initMapLazy, 100);
+    });
+
+    listBtn.addEventListener('click', function() {
+      listBtn.classList.add('active');
+      mapBtn.classList.remove('active');
+      listContainer.style.display = 'block';
+      mapContainer.style.display = 'none';
+    });
+  }
 }
 
 function initLanguage() {
@@ -106,27 +128,60 @@ function renderRestaurants() {
   });
 }
 
+// Ленивая инициализация карты
+function initMapLazy() {
+  const mapDiv = document.getElementById('map');
+  if (!mapDiv) { 
+    console.error('Map container not found'); 
+    return; 
+  }
+  
+  // Если карта еще не создана
+  if (!mapInitialized) {
+    initMap();
+    mapInitialized = true;
+  } else {
+    // Если карта уже есть, просто обновляем размер
+    if (map) {
+      setTimeout(() => map.invalidateSize(), 100);
+    }
+  }
+}
+
 function initMap() {
   const mapDiv = document.getElementById('map');
-  if (!mapDiv) { console.error('Map div not found'); return; }
-  if (map) map.remove();
+  if (!mapDiv) return;
   
-  map = L.map('map').setView([48.1486, 17.1077], 14);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
-    maxZoom: 18
-  }).addTo(map);
+  try {
+    map = L.map('map').setView([48.1486, 17.1077], 14);
+    
+    // CARTO Beige (light_all) слой
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+      maxZoom: 18,
+      subdomains: 'abcd'
+    }).addTo(map);
 
-  restaurants.forEach(r => {
-    const icon = L.divIcon({
-      className: 'custom-marker',
-      html: `<div style="background:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.2);"><i class="fas fa-utensils" style="color:#C17B4E;font-size:16px;"></i></div>`,
-      iconSize: [36, 36], iconAnchor: [18, 36]
+    // Кастомные иконки FontAwesome
+    restaurants.forEach(r => {
+      const customIcon = L.divIcon({
+        className: 'custom-marker',
+        html: `<div style="background:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.2);border:2px solid #C17B4E;">
+                <i class="fas fa-utensils" style="color:#C17B4E;font-size:16px;"></i>
+               </div>`,
+        iconSize: [36, 36],
+        iconAnchor: [18, 36],
+        popupAnchor: [0, -36]
+      });
+      
+      const marker = L.marker([r.lat, r.lon], { icon: customIcon }).addTo(map);
+      const name = r.name || 'Restaurant';
+      marker.bindPopup(`<b>${name}</b><br>${r.address || ''}`);
+      marker.on('click', () => openDetail(r.id));
     });
-    const marker = L.marker([r.lat, r.lon], { icon: icon }).addTo(map);
-    marker.bindPopup(`<b>${r.name}</b><br>${r.address}`);
-    marker.on('click', () => openDetail(r.id));
-  });
+  } catch (e) {
+    console.error('Map init error:', e);
+  }
 }
 
 function openDetail(id) {
@@ -155,7 +210,8 @@ function initDetailTabs() {
       tabs.forEach(t => t.classList.remove('active'));
       this.classList.add('active');
       panels.forEach(p => p.classList.remove('active'));
-      document.getElementById('dtab-' + this.dataset.dtab).classList.add('active');
+      const panel = document.getElementById('dtab-' + this.dataset.dtab);
+      if (panel) panel.classList.add('active');
     });
   });
 }
