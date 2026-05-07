@@ -152,11 +152,24 @@ body {
 #map {
   width: 100%;
   height: 100%;
+  background: #f5f0e8;
+}
+
+.map-container, .list-container {
+  display: none;
+}
+
+.map-container.active, .list-container.active {
+  display: block !important;
 }
 
 .custom-marker {
   background: transparent;
   border: none;
+}
+
+.leaflet-container {
+  background: #f5f0e8 !important;
 }
 
 /* ====== RESTAURANT LIST ====== */
