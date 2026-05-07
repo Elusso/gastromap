@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://unpkg.com/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
   <div id="app">
@@ -35,7 +35,9 @@
         <button id="map-btn" class="view-btn active"><i class="fas fa-map-marker-alt"></i> <span data-i18n="explore.map_view">Mapa</span></button>
         <button id="list-btn" class="view-btn"><i class="fas fa-list"></i> <span data-i18n="explore.list_view">Zoznam</span></button>
       </div>
-      <div id="map-container" class="map-container"><div id="map"></div></div>
+      <div id="map-container" class="map-container">
+        <div id="map"></div>
+      </div>
       <div id="list-container" class="list-container hidden">
         <div class="cuisine-filter" id="cuisine-filter"></div>
         <div id="restaurant-list" class="restaurant-list"></div>
@@ -59,10 +61,12 @@
       <div class="profile-header">
         <div class="avatar-circle"><i class="fas fa-user"></i></div>
         <h2 class="profile-name">Ivan Horváth</h2>
-        <p class="profile-points"><i class="fas fa-star"></i> <strong id="gm-points">1 250</strong> bodov</p>
+        <p class="profile-points"><i class="fas fa-star"></i> <strong id="gm-points">1 250</strong> <span data-i18n="profile.points">Nazhromaždené body</span></p>
       </div>
+      <h3 class="section-subtitle" data-i18n="profile.my_reservations">Moje rezervácie</h3>
       <div id="profile-bookings" class="profile-bookings-section"></div>
-      <div id="profile-sections" class="profile-sections"></div>
+      <h3 class="section-subtitle" data-i18n="profile.used_promotions">Použité akcie</h3>
+      <div id="profile-deals" class="profile-deals-section"></div>
     </section>
 
     <!-- ====== RESTAURANT DETAIL OVERLAY ====== -->
@@ -78,7 +82,6 @@
         <h1 id="detail-name"></h1>
         <div class="detail-cuisine-tags" id="detail-cuisine-tags"></div>
 
-        <!-- Rating + Price + Check -->
         <div class="detail-meta-row">
           <span class="meta-stars" id="meta-stars"></span>
           <span class="meta-price" id="meta-price"></span>
@@ -89,7 +92,6 @@
           <i class="fas fa-map-pin"></i> <span id="detail-address"></span>
         </div>
 
-        <!-- Route button -->
         <a id="detail-route-btn" class="route-btn" target="_blank">
           <i class="fas fa-directions"></i> <span data-i18n="restaurant.directions">Navigácia</span>
         </a>
@@ -105,27 +107,49 @@
 
       <div class="detail-tab-content">
         <div id="dtab-description" class="dtab-panel active"></div>
-        <div id="dtab-menu" class="dtab-panel hidden"></div>
+        <div id="dtab-menu" class="dtab-panel hidden">
+          <div id="menu-list" class="menu-list"></div>
+        </div>
         <div id="dtab-reservation" class="dtab-panel hidden">
           <div class="res-form">
+            <div class="table-grid" id="table-grid">
+              <!-- Tables will be generated here -->
+            </div>
             <div class="res-field"><label data-i18n="reservation.date">Dátum</label><input type="date" id="res-date" class="res-input"></div>
-            <div class="res-field"><label data-i18n="reservation.time">Čas</label><select id="res-time" class="res-input"></select></div>
-            <div class="res-field"><label data-i18n="reservation.guests">Počet hostí</label><select id="res-guests" class="res-input"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+            <div class="res-field"><label data-i18n="reservation.time">Čas</label>
+              <select id="res-time" class="res-input">
+                <option>12:00</option><option>13:00</option><option>14:00</option>
+                <option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option>
+              </select>
+            </div>
+            <div class="res-field"><label data-i18n="reservation.guests">Počet hostí</label>
+              <select id="res-guests" class="res-input">
+                <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+              </select>
+            </div>
             <button class="btn-book-now" onclick="submitBooking()"><span data-i18n="reservation.confirm">Potvrdiť rezerváciu</span></button>
           </div>
         </div>
-        <div id="dtab-reviews" class="dtab-panel hidden"></div>
+        <div id="dtab-reviews" class="dtab-panel hidden">
+          <button class="btn-add-review" onclick="showReviewForm()"><i class="fas fa-plus"></i> <span data-i18n="restaurant.add_review">Pridať recenziu</span></button>
+          <div id="review-form" class="review-form hidden">
+            <div class="star-rating" id="star-rating">
+              <i class="fas fa-star" data-rating="1"></i>
+              <i class="fas fa-star" data-rating="2"></i>
+              <i class="fas fa-star" data-rating="3"></i>
+              <i class="fas fa-star" data-rating="4"></i>
+              <i class="fas fa-star" data-rating="5"></i>
+            </div>
+            <textarea id="review-text" placeholder="Napíšte svoju recenziu..." class="review-textarea"></textarea>
+            <button class="btn-submit-review" onclick="submitReview()">Odoslať</button>
+          </div>
+          <div id="reviews-list" class="reviews-list"></div>
+        </div>
       </div>
     </section>
 
     <!-- ====== TOAST ====== -->
     <div id="toast" class="toast hidden"><span id="toast-msg"></span></div>
-
-    <!-- ====== DIAGNOSTIC PANEL ====== -->
-    <div id="diag-panel" class="diag-panel">
-      <div class="diag-toggle" onclick="toggleDiag()">🔧 Diagnostika</div>
-      <div id="diag-results" class="diag-results hidden"></div>
-    </div>
 
     <!-- ====== BOTTOM NAV ====== -->
     <nav class="bottom-nav">
@@ -140,7 +164,9 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/swiper@11/swiper-bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="mock_data.js"></script>
-  <script src="script.js"></script>
+  <script src="data/restaurants.json" type="application/json" id="restaurants-data"></script>
+  <script src="data/photos.json" type="application/json" id="photos-data"></script>
+  <script src="data/translations.json" type="application/json" id="translations-data"></script>
+  <script src="scripts/app.js"></script>
 </body>
 </html>
