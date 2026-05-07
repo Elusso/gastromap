@@ -4,19 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>GastroMap — Najlepšie reštaurácie v Bratislave</title>
-  <meta name="description" content="Objavte najlepšie reštaurácie v centre Bratislavy. Mapa, menu, rezervácie, akcie.">
   <meta name="theme-color" content="#C17B4E">
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="https://unpkg.com/swiper@11/swiper-bundle.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="styles/main.css">
+  <style>
+    /* Quick fixes for tabs */
+    .tab-page { display: none; }
+    .tab-page.active { display: block; }
+    /* Map beige style */
+    .leaflet-container { background: #f5f0e8; }
+  </style>
 </head>
 <body>
   <div id="app">
-
-    <!-- ====== HEADER ====== -->
     <header class="header">
       <div class="header-inner">
         <img src="images/logo.png" alt="GastroMap" class="logo-img" onerror="this.style.display='none'">
@@ -29,144 +31,94 @@
       </div>
     </header>
 
-    <!-- ====== EXPLORE TAB ====== -->
     <section id="explore-tab" class="tab-page active">
       <div class="view-toggle">
-        <button id="map-btn" class="view-btn active"><i class="fas fa-map-marker-alt"></i> <span data-i18n="explore.map_view">Mapa</span></button>
-        <button id="list-btn" class="view-btn"><i class="fas fa-list"></i> <span data-i18n="explore.list_view">Zoznam</span></button>
+        <button id="map-btn" class="view-btn active"><i class="fas fa-map-marker-alt"></i> Mapa</button>
+        <button id="list-btn" class="view-btn"><i class="fas fa-list"></i> Zoznam</button>
       </div>
-      <div id="map-container" class="map-container">
-        <div id="map"></div>
-      </div>
-      <div id="list-container" class="list-container hidden">
-        <div class="cuisine-filter" id="cuisine-filter"></div>
+      <div id="map-container" class="map-container active"><div id="map"></div></div>
+      <div id="list-container" class="list-container"><div class="cuisine-filter" id="cuisine-filter"></div>
         <div id="restaurant-list" class="restaurant-list"></div>
       </div>
     </section>
 
-    <!-- ====== PROMOTIONS TAB ====== -->
-    <section id="promotions-tab" class="tab-page hidden">
-      <h2 class="page-title" data-i18n="promotions.title">Akcie a Ponuky</h2>
+    <section id="promotions-tab" class="tab-page">
+      <h2 class="page-title">Akcie a Ponuky</h2>
       <div id="promo-list" class="promo-grid"></div>
     </section>
 
-    <!-- ====== NEWS TAB ====== -->
-    <section id="news-tab" class="tab-page hidden">
-      <h2 class="page-title" data-i18n="news.title">Novinky</h2>
+    <section id="news-tab" class="tab-page">
+      <h2 class="page-title">Novinky</h2>
       <div id="news-list" class="news-grid"></div>
     </section>
 
-    <!-- ====== PROFILE TAB ====== -->
-    <section id="profile-tab" class="tab-page hidden">
+    <section id="profile-tab" class="tab-page">
       <div class="profile-header">
         <div class="avatar-circle"><i class="fas fa-user"></i></div>
         <h2 class="profile-name">Ivan Horváth</h2>
-        <p class="profile-points"><i class="fas fa-star"></i> <strong id="gm-points">1 250</strong> <span data-i18n="profile.points">Nazhromaždené body</span></p>
+        <p class="profile-points"><i class="fas fa-star"></i> <strong id="gm-points">1 250</strong> bodov</p>
       </div>
-      <h3 class="section-subtitle" data-i18n="profile.my_reservations">Moje rezervácie</h3>
       <div id="profile-bookings" class="profile-bookings-section"></div>
-      <h3 class="section-subtitle" data-i18n="profile.used_promotions">Použité akcie</h3>
-      <div id="profile-deals" class="profile-deals-section"></div>
+      <div id="profile-sections" class="profile-sections"></div>
     </section>
 
-    <!-- ====== RESTAURANT DETAIL OVERLAY ====== -->
     <section id="detail-overlay" class="detail-overlay hidden">
       <button class="detail-back" onclick="closeDetail()"><i class="fas fa-arrow-left"></i></button>
-
       <div class="detail-carousel swiper" id="detail-carousel">
         <div class="swiper-wrapper" id="carousel-slides"></div>
         <div class="swiper-pagination"></div>
       </div>
-
       <div class="detail-info">
         <h1 id="detail-name"></h1>
         <div class="detail-cuisine-tags" id="detail-cuisine-tags"></div>
-
         <div class="detail-meta-row">
           <span class="meta-stars" id="meta-stars"></span>
           <span class="meta-price" id="meta-price"></span>
-          <span class="meta-check" id="meta-check"></span>
         </div>
-
         <div class="detail-address-row">
           <i class="fas fa-map-pin"></i> <span id="detail-address"></span>
         </div>
-
         <a id="detail-route-btn" class="route-btn" target="_blank">
-          <i class="fas fa-directions"></i> <span data-i18n="restaurant.directions">Navigácia</span>
+          <i class="fas fa-directions"></i> Navigácia
         </a>
       </div>
-
-      <!-- 4 Tabs -->
       <div class="detail-tabs">
-        <button class="dtab active" data-dtab="description"><i class="fas fa-info-circle"></i> <span data-i18n="restaurant.description">Popis</span></button>
-        <button class="dtab" data-dtab="menu"><i class="fas fa-utensils"></i> <span data-i18n="restaurant.menu">Menu</span></button>
-        <button class="dtab" data-dtab="reservation"><i class="fas fa-calendar-check"></i> <span data-i18n="restaurant.reservation">Rezervácia</span></button>
-        <button class="dtab" data-dtab="reviews"><i class="fas fa-comment-dots"></i> <span data-i18n="restaurant.reviews">Recenzie</span></button>
+        <button class="dtab active" data-dtab="description"><i class="fas fa-info-circle"></i> Popis</button>
+        <button class="dtab" data-dtab="menu"><i class="fas fa-utensils"></i> Menu</button>
+        <button class="dtab" data-dtab="reservation"><i class="fas fa-calendar-check"></i> Rezervácia</button>
+        <button class="dtab" data-dtab="reviews"><i class="fas fa-comment-dots"></i> Recenzie</button>
       </div>
-
       <div class="detail-tab-content">
         <div id="dtab-description" class="dtab-panel active"></div>
-        <div id="dtab-menu" class="dtab-panel hidden">
-          <div id="menu-list" class="menu-list"></div>
-        </div>
+        <div id="dtab-menu" class="dtab-panel hidden"></div>
         <div id="dtab-reservation" class="dtab-panel hidden">
           <div class="res-form">
-            <div class="table-grid" id="table-grid">
-              <!-- Tables will be generated here -->
-            </div>
-            <div class="res-field"><label data-i18n="reservation.date">Dátum</label><input type="date" id="res-date" class="res-input"></div>
-            <div class="res-field"><label data-i18n="reservation.time">Čas</label>
-              <select id="res-time" class="res-input">
-                <option>12:00</option><option>13:00</option><option>14:00</option>
-                <option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option>
-              </select>
-            </div>
-            <div class="res-field"><label data-i18n="reservation.guests">Počet hostí</label>
+            <div class="res-field"><label>Dátum</label><input type="date" id="res-date" class="res-input"></div>
+            <div class="res-field"><label>Čas</label><select id="res-time" class="res-input"></select></div>
+            <div class="res-field"><label>Počet hostí</label>
               <select id="res-guests" class="res-input">
-                <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+                <option>1</option><option selected>2</option><option>3</option><option>4</option>
               </select>
             </div>
-            <button class="btn-book-now" onclick="submitBooking()"><span data-i18n="reservation.confirm">Potvrdiť rezerváciu</span></button>
+            <button class="btn-book-now" onclick="submitBooking()">Potvrdiť rezerváciu</button>
           </div>
         </div>
-        <div id="dtab-reviews" class="dtab-panel hidden">
-          <button class="btn-add-review" onclick="showReviewForm()"><i class="fas fa-plus"></i> <span data-i18n="restaurant.add_review">Pridať recenziu</span></button>
-          <div id="review-form" class="review-form hidden">
-            <div class="star-rating" id="star-rating">
-              <i class="fas fa-star" data-rating="1"></i>
-              <i class="fas fa-star" data-rating="2"></i>
-              <i class="fas fa-star" data-rating="3"></i>
-              <i class="fas fa-star" data-rating="4"></i>
-              <i class="fas fa-star" data-rating="5"></i>
-            </div>
-            <textarea id="review-text" placeholder="Napíšte svoju recenziu..." class="review-textarea"></textarea>
-            <button class="btn-submit-review" onclick="submitReview()">Odoslať</button>
-          </div>
-          <div id="reviews-list" class="reviews-list"></div>
-        </div>
+        <div id="dtab-reviews" class="dtab-panel hidden"></div>
       </div>
     </section>
 
-    <!-- ====== TOAST ====== -->
-    <div id="toast" class="toast hidden"><span id="toast-msg"></span></div>
-
-    <!-- ====== BOTTOM NAV ====== -->
     <nav class="bottom-nav">
-      <button class="nav-item active" data-tab="explore"><i class="fas fa-compass"></i><span data-i18n="nav.explore">Objavovať</span></button>
-      <button class="nav-item" data-tab="promotions"><i class="fas fa-star"></i><span data-i18n="nav.promotions">Akcie</span></button>
-      <button class="nav-item" data-tab="news"><i class="fas fa-newspaper"></i><span data-i18n="nav.news">Novinky</span></button>
-      <button class="nav-item" data-tab="profile"><i class="fas fa-user-circle"></i><span data-i18n="nav.profile">Profil</span></button>
+      <button class="nav-item active" data-tab="explore"><i class="fas fa-compass"></i><span>Objavovať</span></button>
+      <button class="nav-item" data-tab="promotions"><i class="fas fa-star"></i><span>Akcie</span></button>
+      <button class="nav-item" data-tab="news"><i class="fas fa-newspaper"></i><span>Novinky</span></button>
+      <button class="nav-item" data-tab="profile"><i class="fas fa-user-circle"></i><span>Profil</span></button>
     </nav>
   </div>
 
-  <!-- ====== SCRIPTS ====== -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/swiper@11/swiper-bundle.min.js"></script>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="data/restaurants.json" type="application/json" id="restaurants-data"></script>
-  <script src="data/photos.json" type="application/json" id="photos-data"></script>
-  <script src="data/translations.json" type="application/json" id="translations-data"></script>
+  <script src="data/restaurants.json"></script>
+  <script src="data/photos.json"></script>
+  <script src="data/translations.json"></script>
   <script src="scripts/app.js"></script>
 </body>
 </html>
