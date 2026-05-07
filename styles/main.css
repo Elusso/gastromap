@@ -1,19 +1,36 @@
-/* Apple-style design system for GastroMap - Warm Tones */
-/* Color palette: warm grays, soft accents, #C17B4E primary */
+/* GastroMap - Apple-style UI with Beige Design */
+/* Accent: #C17B4E | Standards: Apple HIG, Open-Design */
 
 :root {
-  --apple-bg: #f5f5f7;
-  --apple-dark: #1a1a1d;
-  --apple-accent: #C17B4E;
-  --apple-accent-light: #d4a574;
-  --apple-green: #34c759;
-  --apple-orange: #ff9500;
-  --apple-red: #ff3b30;
-  --apple-gray: #8e8e93;
-  --apple-gray-light: #afafaf;
-  --apple-gray-bg: #f0f0f0;
-  --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  --card-radius: 12px;
+  /* Beige & Warm Palette */
+  --bg-primary: #FCF9F4;       /* Beige-white background (Apple-style) */
+  --bg-secondary: #F5F5DC;     /* Classic beige */
+  --bg-card: #FFFFFF;
+  --bg-map: #f5f0e8;           /* Map beige tint */
+  
+  /* Accent (Apple-style warm brown) */
+  --accent: #C17B4E;
+  --accent-light: #d4a574;
+  --accent-bg: rgba(193, 123, 78, 0.1);
+  
+  /* Text */
+  --text-primary: #1a1a1d;
+  --text-secondary: #8e8e93;
+  --text-tertiary: #afafaf;
+  
+  /* System colors */
+  --green: #34c759;
+  --orange: #ff9500;
+  --red: #ff3b30;
+  
+  /* Shadows & Radius (Apple-style) */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
 }
 
 * {
@@ -24,13 +41,20 @@
 
 html, body {
   height: 100%;
-  background: var(--apple-bg);
+  background: var(--bg-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  color: var(--text-primary);
+  line-height: 1.5;
 }
 
 body {
   padding-bottom: 84px; /* bottom nav height */
+}
+
+/* ====== HIDDEN UTILITY (CRITICAL FOR TABS) ====== */
+.hidden {
+  display: none !important;
 }
 
 /* ====== HEADER ====== */
@@ -39,11 +63,13 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  background: #fff;
-  border-bottom: 1px solid #e5e5e5;
+  background: var(--bg-card);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
   position: sticky;
   top: 0;
   z-index: 50;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .header-inner {
@@ -60,7 +86,8 @@ body {
 .brand {
   font-size: 22px;
   font-weight: 700;
-  color: var(--apple-accent);
+  color: var(--accent);
+  letter-spacing: -0.5px;
 }
 
 .lang-switch {
@@ -70,65 +97,75 @@ body {
 
 .lang-btn {
   padding: 6px 12px;
-  border: 1px solid var(--apple-gray-light);
-  background: #fff;
-  border-radius: 16px;
+  border: 1px solid var(--text-tertiary);
+  background: var(--bg-card);
+  border-radius: var(--radius-full);
   font-size: 13px;
   font-weight: 600;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .lang-btn.active {
-  background: var(--apple-accent);
+  background: var(--accent);
   color: #fff;
-  border-color: var(--apple-accent);
+  border-color: var(--accent);
 }
 
-/* ====== TAB PAGES ====== */
+/* ====== TAB PAGES (SMOOTH TRANSITIONS) ====== */
 .tab-page {
   display: none;
   padding: 16px;
   min-height: calc(100vh - 84px - 60px);
+  animation: fadeIn 0.3s ease;
 }
 
 .tab-page.active {
   display: block;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .page-title {
   font-size: 28px;
   font-weight: 700;
-  color: var(--apple-dark);
+  color: var(--text-primary);
   margin-bottom: 16px;
+  letter-spacing: -0.5px;
 }
 
 .section-subtitle {
   font-size: 18px;
   font-weight: 600;
-  color: var(--apple-dark);
+  color: var(--text-primary);
   margin: 20px 0 12px;
 }
 
-/* ====== VIEW TOGGLE ====== */
+/* ====== VIEW TOGGLE (MAP/LIST) ====== */
 .view-toggle {
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
+  background: var(--bg-secondary);
+  padding: 4px;
+  border-radius: var(--radius-md);
 }
 
 .view-btn {
   flex: 1;
   padding: 10px;
-  border: 1px solid var(--apple-gray-light);
-  background: #fff;
-  border-radius: 8px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   font-weight: 600;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,63 +173,86 @@ body {
 }
 
 .view-btn.active {
-  background: var(--apple-accent);
-  color: #fff;
-  border-color: var(--apple-accent);
+  background: var(--bg-card);
+  color: var(--accent);
+  box-shadow: var(--shadow-sm);
 }
 
-/* ====== MAP ====== */
+/* ====== MAP & LIST (SMOOTH SWITCHING) ====== */
+.map-container, .list-container {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
 .map-container {
-  display: block !important;
-  border-radius: var(--card-radius);
+  border-radius: var(--radius-md);
   overflow: hidden;
   height: 400px;
   margin-bottom: 16px;
+  background: var(--bg-map);
 }
 
 .list-container {
-  display: none;
+  margin-top: 16px;
 }
 
-.hidden {
-  display: none !important;
+/* When hidden via JS, use .hidden class for instant hide, 
+   or use these classes for smooth fade if needed */
+.map-container.fade-out,
+.list-container.fade-out {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
 }
 
+/* ====== MAP STYLING (BEIGE DESIGN) ====== */
 .custom-marker {
   background: transparent;
   border: none;
 }
 
 .leaflet-container {
-  background: #f5f0e8 !important;
+  background: var(--bg-map) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius-sm) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.leaflet-popup-content {
+  font-size: 14px;
+  color: var(--text-primary);
 }
 
 /* ====== RESTAURANT LIST ====== */
-.list-container {
-  margin-top: 16px;
-}
-
 .cuisine-filter {
   display: flex;
   gap: 8px;
   overflow-x: auto;
   padding-bottom: 12px;
   margin-bottom: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cuisine-filter::-webkit-scrollbar {
+  display: none;
 }
 
 .filter-chip {
   padding: 8px 16px;
-  background: var(--apple-gray-bg);
-  border-radius: 20px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-full);
   font-size: 13px;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
   white-space: nowrap;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  border: none;
 }
 
 .filter-chip.active {
-  background: var(--apple-accent);
+  background: var(--accent);
   color: #fff;
 }
 
@@ -204,16 +264,20 @@ body {
 
 .restaurant-card {
   display: flex;
-  background: #fff;
-  border-radius: var(--card-radius);
-  box-shadow: var(--card-shadow);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .restaurant-card:active {
   transform: scale(0.98);
+}
+
+.restaurant-card:hover {
+  box-shadow: var(--shadow-lg);
 }
 
 .card-image {
@@ -235,13 +299,13 @@ body {
 .card-title {
   font-size: 16px;
   font-weight: 700;
-  color: var(--apple-dark);
+  color: var(--text-primary);
   margin-bottom: 6px;
 }
 
 .card-desc {
   font-size: 13px;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
   line-height: 1.4;
   margin-bottom: 8px;
 }
@@ -256,14 +320,14 @@ body {
 .tag {
   font-size: 11px;
   padding: 3px 8px;
-  background: var(--apple-gray-bg);
-  border-radius: 10px;
-  color: var(--apple-gray);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
 }
 
 .card-rating {
   font-size: 13px;
-  color: var(--apple-dark);
+  color: var(--text-primary);
 }
 
 .rating {
@@ -278,10 +342,10 @@ body {
 }
 
 .promo-card {
-  background: #fff;
-  border-radius: var(--card-radius);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
   padding: 16px;
-  box-shadow: var(--card-shadow);
+  box-shadow: var(--shadow-md);
 }
 
 .promo-header {
@@ -294,20 +358,20 @@ body {
 .promo-header h3 {
   font-size: 16px;
   font-weight: 700;
-  color: var(--apple-dark);
+  color: var(--text-primary);
 }
 
 .promo-restaurant {
   font-size: 12px;
-  color: var(--apple-accent);
-  background: rgba(193, 123, 78, 0.1);
+  color: var(--accent);
+  background: var(--accent-bg);
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 
 .promo-desc {
   font-size: 14px;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
   margin-bottom: 12px;
 }
 
@@ -319,7 +383,7 @@ body {
 
 .countdown {
   font-size: 13px;
-  color: var(--apple-red);
+  color: var(--red);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -327,19 +391,23 @@ body {
 
 .btn-use-deal {
   padding: 8px 16px;
-  background: var(--apple-accent);
+  background: var(--accent);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+}
+
+.btn-use-deal:active {
+  transform: scale(0.96);
 }
 
 .btn-use-deal.used {
-  background: var(--apple-gray-bg);
-  color: var(--apple-gray);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   cursor: not-allowed;
 }
 
@@ -351,10 +419,10 @@ body {
 }
 
 .news-card {
-  background: #fff;
-  border-radius: var(--card-radius);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: var(--card-shadow);
+  box-shadow: var(--shadow-md);
 }
 
 .news-image {
@@ -369,20 +437,20 @@ body {
 
 .news-date {
   font-size: 12px;
-  color: var(--apple-accent);
+  color: var(--accent);
   font-weight: 600;
 }
 
 .news-title {
   font-size: 16px;
   font-weight: 700;
-  color: var(--apple-dark);
+  color: var(--text-primary);
   margin: 6px 0;
 }
 
 .news-excerpt {
   font-size: 14px;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
@@ -395,26 +463,26 @@ body {
 .avatar-circle {
   width: 80px;
   height: 80px;
-  background: var(--apple-gray-bg);
+  background: var(--bg-secondary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 12px;
   font-size: 32px;
-  color: var(--apple-gray);
+  color: var(--text-tertiary);
 }
 
 .profile-name {
   font-size: 20px;
   font-weight: 700;
-  color: var(--apple-dark);
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
 .profile-points {
   font-size: 16px;
-  color: var(--apple-accent);
+  color: var(--accent);
 }
 
 .profile-points strong {
@@ -426,11 +494,11 @@ body {
 }
 
 .booking-item, .deal-item {
-  background: #fff;
-  border-radius: var(--card-radius);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
   padding: 12px;
   margin-bottom: 8px;
-  box-shadow: var(--card-shadow);
+  box-shadow: var(--shadow-md);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -439,13 +507,13 @@ body {
 .booking-info h4 {
   font-size: 14px;
   font-weight: 600;
-  color: var(--apple-dark);
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .booking-info p {
   font-size: 13px;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -454,18 +522,18 @@ body {
 .booking-status {
   font-size: 12px;
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-weight: 600;
 }
 
 .booking-status.confirmed {
   background: rgba(52, 199, 89, 0.1);
-  color: var(--apple-green);
+  color: var(--green);
 }
 
 .booking-status.pending {
   background: rgba(255, 149, 0, 0.1);
-  color: var(--apple-orange);
+  color: var(--orange);
 }
 
 /* ====== DETAIL OVERLAY ====== */
@@ -475,9 +543,15 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #fff;
+  background: var(--bg-card);
   z-index: 1000;
   overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
 .detail-overlay.hidden {
@@ -497,6 +571,7 @@ body {
   font-size: 18px;
   cursor: pointer;
   z-index: 10;
+  backdrop-filter: blur(4px);
 }
 
 .detail-carousel {
@@ -516,7 +591,7 @@ body {
 #detail-name {
   font-size: 24px;
   font-weight: 700;
-  color: var(--apple-dark);
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
@@ -540,18 +615,18 @@ body {
 
 .meta-price {
   font-size: 14px;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
 }
 
 .meta-check {
   font-size: 14px;
-  color: var(--apple-accent);
+  color: var(--accent);
   font-weight: 600;
 }
 
 .detail-address-row {
   font-size: 14px;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
   margin-bottom: 12px;
   display: flex;
   align-items: center;
@@ -563,20 +638,25 @@ body {
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  background: var(--apple-accent);
+  background: var(--accent);
   color: #fff;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 16px;
+  transition: all 0.2s ease;
 }
 
 /* ====== DETAIL TABS ====== */
 .detail-tabs {
   display: flex;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
   overflow-x: auto;
+}
+
+.detail-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .dtab {
@@ -585,23 +665,24 @@ body {
   border: none;
   font-size: 14px;
   font-weight: 600;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
   cursor: pointer;
   white-space: nowrap;
   border-bottom: 2px solid transparent;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .dtab.active {
-  color: var(--apple-accent);
-  border-bottom-color: var(--apple-accent);
+  color: var(--accent);
+  border-bottom-color: var(--accent);
 }
 
 .dtab-panel {
   padding: 16px;
+  animation: fadeIn 0.2s ease;
 }
 
 .dtab-panel.hidden {
@@ -619,19 +700,19 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 12px;
-  background: var(--apple-gray-bg);
-  border-radius: 8px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
 }
 
 .menu-name {
   font-size: 15px;
-  color: var(--apple-dark);
+  color: var(--text-primary);
 }
 
 .menu-price {
   font-size: 15px;
   font-weight: 600;
-  color: var(--apple-accent);
+  color: var(--accent);
 }
 
 /* ====== RESERVATION ====== */
@@ -644,39 +725,39 @@ body {
 
 .table {
   aspect-ratio: 1;
-  background: var(--apple-gray-bg);
-  border-radius: 8px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 4px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   border: 2px solid transparent;
 }
 
 .table.selected {
-  background: rgba(193, 123, 78, 0.1);
-  border-color: var(--apple-accent);
+  background: var(--accent-bg);
+  border-color: var(--accent);
 }
 
 .table i {
   font-size: 18px;
-  color: var(--apple-gray);
+  color: var(--text-tertiary);
 }
 
 .table.selected i {
-  color: var(--apple-accent);
+  color: var(--accent);
 }
 
 .table span {
   font-size: 12px;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
 }
 
 .table.selected span {
-  color: var(--apple-accent);
+  color: var(--accent);
   font-weight: 600;
 }
 
@@ -688,30 +769,37 @@ body {
   display: block;
   font-size: 14px;
   font-weight: 600;
-  color: var(--apple-dark);
+  color: var(--text-primary);
   margin-bottom: 6px;
 }
 
 .res-input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: var(--radius-sm);
   font-size: 14px;
   font-family: inherit;
+  background: var(--bg-card);
+  transition: border-color 0.2s ease;
+}
+
+.res-input:focus {
+  outline: none;
+  border-color: var(--accent);
 }
 
 .btn-book-now {
   width: 100%;
   padding: 14px;
-  background: var(--apple-accent);
+  background: var(--accent);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .btn-book-now:active {
@@ -722,12 +810,12 @@ body {
 .btn-add-review {
   width: 100%;
   padding: 12px;
-  background: var(--apple-gray-bg);
+  background: var(--bg-secondary);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   font-weight: 600;
-  color: var(--apple-dark);
+  color: var(--text-primary);
   cursor: pointer;
   margin-bottom: 16px;
   display: flex;
@@ -737,9 +825,9 @@ body {
 }
 
 .review-form {
-  background: var(--apple-gray-bg);
+  background: var(--bg-secondary);
   padding: 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   margin-bottom: 16px;
 }
 
@@ -752,9 +840,9 @@ body {
 
 .star-rating i {
   font-size: 24px;
-  color: var(--apple-gray-light);
+  color: var(--text-tertiary);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .star-rating i.fas {
@@ -765,23 +853,30 @@ body {
   width: 100%;
   height: 100px;
   padding: 12px;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: var(--radius-sm);
   font-family: inherit;
   font-size: 14px;
   resize: none;
   margin-bottom: 12px;
+  background: var(--bg-card);
+}
+
+.review-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
 }
 
 .btn-submit-review {
   padding: 10px 20px;
-  background: var(--apple-accent);
+  background: var(--accent);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .reviews-list {
@@ -792,8 +887,8 @@ body {
 
 .review-item {
   padding: 12px;
-  background: var(--apple-gray-bg);
-  border-radius: 8px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
 }
 
 .review-header {
@@ -804,12 +899,12 @@ body {
 
 .review-header strong {
   font-size: 14px;
-  color: var(--apple-dark);
+  color: var(--text-primary);
 }
 
 .review-date {
   font-size: 12px;
-  color: var(--apple-gray);
+  color: var(--text-tertiary);
 }
 
 .review-stars {
@@ -819,7 +914,7 @@ body {
 
 .review-text {
   font-size: 14px;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
@@ -829,14 +924,15 @@ body {
   bottom: 100px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--apple-dark);
+  background: var(--text-primary);
   color: #fff;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   font-weight: 600;
   z-index: 2000;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-lg);
+  animation: fadeIn 0.2s ease;
 }
 
 .toast.hidden {
@@ -850,13 +946,15 @@ body {
   left: 0;
   right: 0;
   height: 68px;
-  background: #fff;
+  background: var(--bg-card);
   display: flex;
   justify-content: space-around;
   align-items: center;
   box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
   z-index: 100;
   padding: 0 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .nav-item {
@@ -870,12 +968,12 @@ body {
   border: none;
   background: none;
   cursor: pointer;
-  transition: all 0.2s;
-  color: var(--apple-gray);
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
 }
 
 .nav-item.active {
-  color: var(--apple-accent);
+  color: var(--accent);
 }
 
 .nav-item i {
@@ -887,13 +985,24 @@ body {
   font-weight: 500;
 }
 
-.hidden {
-  display: none !important;
-}
-
+/* ====== EMPTY STATE ====== */
 .empty-state {
   text-align: center;
-  color: var(--apple-gray);
+  color: var(--text-secondary);
   font-size: 14px;
   padding: 24px;
+}
+
+/* ====== SCROLLBAR (APPLE-STYLE) ====== */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-tertiary);
+  border-radius: 2px;
 }
